@@ -1,0 +1,13 @@
+{
+  "itemGroup.excraft": "Example Mod Tab",
+  "block.excraft.example_block": "Example Block",
+  "item.excraft.example_item": "Example Item",
+
+  "excraft.configuration.title": "excraft Configs",
+  "excraft.configuration.section.excraft.common.toml": "excraft Configs",
+  "excraft.configuration.section.excraft.common.toml.title": "excraft Configs",
+  "excraft.configuration.items": "Item List",
+  "excraft.configuration.logDirtBlock": "Log Dirt Block",
+  "excraft.configuration.magicNumberIntroduction": "Magic Number Text",
+  "excraft.configuration.magicNumber": "Magic Number"
+}
