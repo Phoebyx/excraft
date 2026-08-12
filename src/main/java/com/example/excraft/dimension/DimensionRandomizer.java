@@ -9,26 +9,46 @@ import net.minecraft.world.level.chunk.ChunkGenerator;
 import java.util.List;
 
 public class DimensionRandomizer {
-    static long salt = 7424;
-    static int minInt =
 
-    public static long generateSalt() {
+    static int salt = 7424;
+    static boolean isToBeRandomized = true;
+
+    //Return Salt
+    public static int getSalt() {
         return salt;
     }
 
-    public static long getSalt() {
-        return salt;
-    }
-
+    //Manually set the salt. Prevents it from being randomized next dimension creation.
     public static void manualSalt(int inputSalt) {
         salt = inputSalt;
+        isToBeRandomized = false;
     }
 
+    //Generate a RandomSource object from salt for use on other functions.
     public static RandomSource generateRandomFromSalt() {
         return RandomSource.create(salt);
     }
+
+    //Randomizes salt is the flag isToBeRandomized is true
     public static void randomizeSalt() {
-        salt = Math.
+        if (isToBeRandomized) {
+            salt = (int) ((Integer.MAX_VALUE - 1) * Math.random());
+        }
+        isToBeRandomized = true;
+    }
+
+    //Toggles the boolean isToBeRandomized
+    public static void toggleIsToBeRandomized() {
+        if (isToBeRandomized) {
+            isToBeRandomized = false;
+        } else {
+            isToBeRandomized = true;
+        }
+    }
+
+    //Returns isToBeRandomized
+    public static boolean isToBeRandomized() {
+        return isToBeRandomized;
     }
 
     /*    public void dimensionKick(MinecraftServer server) {

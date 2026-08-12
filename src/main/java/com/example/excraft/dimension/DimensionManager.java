@@ -27,6 +27,7 @@ public class DimensionManager {
     public static boolean doesDimensionExist = false;
 
     public static void createDimension(MinecraftServer server) {
+        DimensionRandomizer.randomizeSalt();
         DimensionCreator newDimension = new DimensionCreator();
         DimensionType dimensionType = newDimension.makeDimensionType();
         ServerLevel oldLevel = server.overworld();
