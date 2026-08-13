@@ -1,0 +1,16 @@
+{
+  "structures": [
+    {
+      "weight": 1,
+      "structure": "excraft:barrenrealmportal"
+    }
+  ],
+  "placement" : {
+    "type": "concentric_rings",
+    "distance": 1,
+    "count": 1,
+    "preferred_biomes": "excraft:barrenrealm",
+    "salt": 0,
+    "spread": 1
+  }
+}

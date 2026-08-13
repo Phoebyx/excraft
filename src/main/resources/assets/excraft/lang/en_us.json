@@ -9,5 +9,7 @@
   "excraft.configuration.items": "Item List",
   "excraft.configuration.logDirtBlock": "Log Dirt Block",
   "excraft.configuration.magicNumberIntroduction": "Magic Number Text",
-  "excraft.configuration.magicNumber": "Magic Number"
+  "excraft.configuration.magicNumber": "Magic Number",
+  "generator.excraft.barrenrealms" : "Barren Realms",
+  "biome.excraft.barrenrealm" : "Barren Realm"
 }

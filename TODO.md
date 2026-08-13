@@ -19,8 +19,12 @@ Needs testing !
   * Resourceless overworld
   * No crafting/resource processing in dimension (Config)
   * Noise Blacklist/Whitelist
-  * More Noise
+  * More Noise types
   * Special Dimension Types
+    * Perma Night/Day/Dusk
+    * Extreme Fog
+    * Extra Small/Large
+    * No water/Lava Oceans
   * Event to signal dimensional decay
     * Infection speed up
     * Blocks Disappear
@@ -41,5 +45,5 @@ Needs testing !
   * Timer in UI
   * Expedition Count
   * IMPLEMENT SAFETY PRECAUTIONS
-
+  
     
