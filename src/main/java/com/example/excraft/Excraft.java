@@ -1,29 +1,23 @@
 package com.example.excraft;
 
-import com.example.excraft.data.ExcraftData;
-import com.example.excraft.dimension.DimensionCreator;
+import com.example.excraft.data.ExcraftCreativeModeTab;
+import com.example.excraft.data.ExcraftDataRegisters;
 import com.example.excraft.dimension.DimensionManager;
 import com.example.excraft.dimension.DimensionRandomizer;
+import com.example.excraft.portal.PlaceOriginPortal;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.DataProvider;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.entity.RelativeMovement;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.levelgen.presets.WorldPreset;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterPresetEditorsEvent;
-import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -44,26 +38,37 @@ import java.util.Set;
 public class Excraft {
     // Define mod id in a common place for everything to reference
     public static final String MODID = "excraft";
-    public static final DeferredRegister<WorldPreset> WORLD_PRESET = DeferredRegister.create(Registries.WORLD_PRESET, Excraft.MODID);
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
 
-     public Excraft(IEventBus modEventBus, ModContainer modContainer) {
+    public Excraft(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(ExcraftData::onGatherData);
+        ExcraftDataRegisters.registerRegisters(modEventBus);
+        modEventBus.addListener(ExcraftDataRegisters::onGatherData);
 
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (excraft) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
+
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        modEventBus.addListener(this::addCreative);
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {
         // Some common setup code
+    }
+    @SubscribeEvent
+    public void portalPlacer(ServerStartedEvent event) {
+         MinecraftServer server = event.getServer();
+         PlaceOriginPortal.placeBarrenRealmPortal(server,event);
+    }
+
+    private void addCreative(BuildCreativeModeTabContentsEvent event) {
+        ExcraftCreativeModeTab.addCreative(event);
     }
 
     // Add the example block item to the building blocks tab

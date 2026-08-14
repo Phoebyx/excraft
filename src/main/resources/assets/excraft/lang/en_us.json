@@ -1,6 +1,10 @@
 {
-  "itemGroup.excraft": "Example Mod Tab",
-  "block.excraft.example_block": "Example Block",
+  "itemGroup.excraft": "Excraft",
+  "block.excraft.unbreakable_sandstone": "Unbreakable Sandstone",
+  "block.excraft.unbreakable_sandstone_slab": "Unbreakable Sandstone Slab",
+  "block.excraft.unbreakable_sandstone_stairs": "Unbreakable Sandstone Stairs",
+  "block.excraft.unbreakable_chiseled_sandstone": "Unbreakable Chiseled Sandstone",
+
   "item.excraft.example_item": "Example Item",
 
   "excraft.configuration.title": "excraft Configs",
