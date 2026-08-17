@@ -1,23 +1,26 @@
 package com.example.excraft;
 
+import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.data.ExcraftCreativeModeTab;
 import com.example.excraft.data.ExcraftDataRegisters;
+import com.example.excraft.data.ExcraftTimer;
 import com.example.excraft.dimension.DimensionManager;
 import com.example.excraft.dimension.DimensionRandomizer;
+import com.example.excraft.dimension.DisabledDimensionBlocks;
 import com.example.excraft.portal.PlaceOriginPortal;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTabs;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -52,7 +55,7 @@ public class Excraft {
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
-
+        NeoForge.EVENT_BUS.addListener(DisabledDimensionBlocks::preventDisabledBlocks);
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         modEventBus.addListener(this::addCreative);
@@ -62,16 +65,19 @@ public class Excraft {
         // Some common setup code
     }
     @SubscribeEvent
-    public void portalPlacer(ServerStartedEvent event) {
+    public void onServerStarted(ServerStartedEvent event) {
          MinecraftServer server = event.getServer();
-         PlaceOriginPortal.placeBarrenRealmPortal(server,event);
+         if (server.overworld().getBlockState(new BlockPos(0,-3,0)).getBlock() != ExcraftBlocks.UNBREAKABLE_SANDSTONE.get()) {
+             PlaceOriginPortal.placeBarrenRealmPortal(server, event);
+         }
+         if (!DimensionManager.doesDimensionExist(server)) {
+             createDimension(event.getServer());
+         }
     }
 
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         ExcraftCreativeModeTab.addCreative(event);
     }
-
-    // Add the example block item to the building blocks tab
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
@@ -80,13 +86,32 @@ public class Excraft {
         LOGGER.info("HELLO from server starting");
     }
 
+    @SubscribeEvent
+    public void onPreServerTick(ServerTickEvent.Pre event) {
+        if (DimensionManager.doesDimensionExist(event.getServer())) {
+            Excraft.LOGGER.info("ItDoes!");
+            if (ExcraftTimer.getCurrentTimer(event.getServer()) <= 0) {
+                createDimension(event.getServer());
+                Excraft.LOGGER.info("Timer is up! Resetting Dimension");
+            }
+        }
+    }
+
     public void onRegisterCommands(RegisterCommandsEvent event)
     {
         event.getDispatcher().register(Commands.literal("excraft")
-                .then(Commands.literal("createdimension")
-                        .executes(this::createDimension))
-                .then(Commands.literal("deletedimension")
-                        .executes(this::deleteDimension))
+                .then(Commands.literal("createDimension")
+                        .executes(context -> {
+                            MinecraftServer server = context.getSource().getServer();
+                            createDimension(server);
+                            return 1;
+                        }))
+                .then(Commands.literal("deleteDimension")
+                        .executes(context -> {
+                            MinecraftServer server = context.getSource().getServer();
+                            deleteDimension(server);
+                            return 1;
+                        }))
                 .then(Commands.literal("seed")
                         .then(Commands.argument("seed", IntegerArgumentType.integer())
                                 .executes(context -> {
@@ -94,7 +119,7 @@ public class Excraft {
                                     return 1;
                                 }))
                 )
-                .then(Commands.literal("readseed")
+                .then(Commands.literal("readSeed")
                         .executes(context -> {
                                     int salt = DimensionRandomizer.getSalt();
                                     context.getSource().sendSuccess(
@@ -104,10 +129,21 @@ public class Excraft {
                                     return 1;
                         })
                 )
-                .then(Commands.literal("excrafttp")
+                .then(Commands.literal("tp")
                         .executes(this::tpPlayerToExcraft)
                 )
+                .then(Commands.literal("timer")
+                        .executes(context ->  {
+                            MinecraftServer server = context.getSource().getServer();
+                            context.getSource().sendSuccess(
+                                    () -> Component.literal(ExcraftTimer.getCurrentTimerInHumanReadableForm(server)),
+                                    true
+                            );
+                                    return 1;
+                        })
+                )
         );
+
     }
 
     private int tpPlayerToExcraft(CommandContext<CommandSourceStack> context) {
@@ -121,26 +157,21 @@ public class Excraft {
          return 1;
     }
 
-    public int createDimension(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-         try {
-             MinecraftServer server = context.getSource().getServer();
-             if (DimensionManager.doesDimensionExist()) {
-                 DimensionManager.deleteDimension(server);
-                 wait(2000);
-                 DimensionManager.clearUnusedDimension(server);
-                 wait(2000);
-             }
-             DimensionManager.createDimension(server);
-         } catch (Exception e) {
-             throw new SimpleCommandExceptionType(Component.literal(e.getMessage())).create();
-         }
-         return 1;
+    public void createDimension(MinecraftServer server) {
+        if (DimensionManager.doesDimensionExist(server)) {
+            server.getLevel(DimensionManager.EXCRAFT_LEVEL).noSave = true;
+            deleteDimension(server);
+        }
+        DimensionManager.createDimension(server);
     }
 
-    public int deleteDimension(CommandContext<CommandSourceStack> context) {
-         MinecraftServer server = context.getSource().getServer();
+    public void deleteDimension(MinecraftServer server) {
          DimensionManager.deleteDimension(server);
          DimensionManager.clearUnusedDimension(server);
-         return 1;
+         int i = 0;
+         while (DimensionManager.areFilesDeleted(server)) {
+            i++;
+            if (i >= 3000) {break;}
+        }
     }
 }

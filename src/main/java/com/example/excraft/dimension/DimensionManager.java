@@ -1,6 +1,7 @@
 package com.example.excraft.dimension;
 
 import com.example.excraft.Excraft;
+import com.example.excraft.data.ExcraftTimer;
 import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -24,7 +25,6 @@ import java.util.function.Supplier;
 
 public class DimensionManager {
     public static final ResourceKey<Level> EXCRAFT_LEVEL = ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(Excraft.MODID, "excraft"));
-    public static boolean doesDimensionExist = false;
 
     public static void createDimension(MinecraftServer server) {
         DimensionRandomizer.randomizeSalt();
@@ -33,12 +33,12 @@ public class DimensionManager {
         ServerLevel oldLevel = server.overworld();
         Holder<DimensionType> typeHolder = oldLevel.dimensionTypeRegistration();
         InfiniverseAPI.get().getOrCreateLevel(server, EXCRAFT_LEVEL, () -> newDimension.makeStem(typeHolder.value(),server));
-        doesDimensionExist = true;
     }
+
     public static void deleteDimension(MinecraftServer server) {
         InfiniverseAPI.get().markDimensionForUnregistration(server, EXCRAFT_LEVEL);
-        doesDimensionExist = false;
     }
+
     public static void clearUnusedDimension(MinecraftServer server) {
             Path dimensionPath = server.getWorldPath(LevelResource.ROOT).resolve("dimensions/excraft");
             try {
@@ -54,7 +54,18 @@ public class DimensionManager {
                 throw new RuntimeException(e);
             }
     }
-    public static boolean doesDimensionExist() {
-        return doesDimensionExist;
+
+    public static boolean doesDimensionExist(MinecraftServer server) {
+        try {
+            Excraft.LOGGER.info("Getting is handlingTick" + server.getLevel(EXCRAFT_LEVEL));
+            return server.getLevel(EXCRAFT_LEVEL).getGameTime() >= 0;
+        } catch (NullPointerException e) {
+            Excraft.LOGGER.info("Getting is handlingTick, but it was Null");
+            return false;
+        }
+    }
+    public static boolean areFilesDeleted(MinecraftServer server) {
+        Path dimensionPath = server.getWorldPath(LevelResource.ROOT).resolve("dimensions/excraft");
+        return dimensionPath.toFile().exists();
     }
 }

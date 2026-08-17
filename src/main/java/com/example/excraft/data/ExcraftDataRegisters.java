@@ -1,12 +1,15 @@
 package com.example.excraft.data;
 
 import com.example.excraft.Excraft;
+import com.example.excraft.blocks.DisabledDimensionBlocksTag;
 import com.example.excraft.blocks.ExcraftBlocks;
+import com.example.excraft.dimension.DisabledDimensionBlocks;
 import com.example.excraft.items.ExcraftItems;
 import net.minecraft.DetectedVersion;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
@@ -15,6 +18,7 @@ import net.minecraft.util.InclusiveRange;
 import net.minecraft.world.item.CreativeModeTab;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -43,12 +47,10 @@ public class ExcraftDataRegisters {
     @SubscribeEvent
     public static void onGatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
+        PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        Excraft.LOGGER.info("Registered new world type");
-        generator.addProvider(true, new PackMetadataGenerator(generator.getPackOutput()).add(PackMetadataSection.TYPE, new PackMetadataSection(
-                Component.translatable("pack.excraft.mod.description"),
-                DetectedVersion.BUILT_IN.getPackVersion(PackType.SERVER_DATA),
-                Optional.of(new InclusiveRange<>(0, Integer.MAX_VALUE)))));
+        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
     }
 
 }
+ /*  */

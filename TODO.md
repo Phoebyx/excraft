@@ -16,8 +16,8 @@ Needs testing !
   * Implement limited world size ?
     * Function to make it a disc world for example.
   * Aeronautics compatibility ! (Not just crashes, but ex: prevent them from being destroyed)
-  * Resourceless overworld
-  * No crafting/resource processing in dimension (Config)
+  * Resourceless overworld DONE (ish, will want to make it have some neater terrain)
+  * No crafting/resource processing in dimension (Config) (Logic Done)
   * Noise Blacklist/Whitelist
   * More Noise types
   * Special Dimension Types

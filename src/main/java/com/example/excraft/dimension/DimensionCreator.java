@@ -1,6 +1,9 @@
 package com.example.excraft.dimension;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.DimensionTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
@@ -8,6 +11,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.dimension.LevelStem;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
@@ -29,7 +33,7 @@ public class DimensionCreator {
     public LevelStem makeStem(DimensionType dimensionType, MinecraftServer server) {
         BiomeSource source = DimensionBiomes.buildRandomBiomes(server);
         NoiseBasedChunkGenerator excraftRandomNoise = ExcraftNoiseGrabber.buildRandomNoise(source,server);
-        Holder<DimensionType> hdimensionType = Holder.direct(dimensionType);
+        Holder<DimensionType> hdimensionType = server.registryAccess().holderOrThrow(BuiltinDimensionTypes.OVERWORLD);
         return new LevelStem(hdimensionType, excraftRandomNoise);
     }
 
