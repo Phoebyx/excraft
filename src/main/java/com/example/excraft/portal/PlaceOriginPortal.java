@@ -1,6 +1,7 @@
 package com.example.excraft.portal;
 
 import com.example.excraft.Excraft;
+import com.example.excraft.dimension.DimensionManager;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -34,15 +35,26 @@ public class PlaceOriginPortal {
     public StructurePieceType portalStructureLocation = BuiltInRegistries.STRUCTURE_PIECE.get(ResourceLocation.fromNamespaceAndPath("excraft","barrenrealmsportal"));
     public static final ResourceKey<Structure> PORTALSTRUCTURE = ResourceKey.create(Registries.STRUCTURE,ResourceLocation.fromNamespaceAndPath("excraft", "barrenrealmsportal"));
 
-    public static void placeBarrenRealmPortal(MinecraftServer server, ServerStartedEvent event) {
+    public static void placeBarrenRealmPortal(MinecraftServer server) {
         StructureTemplate template = server.getStructureManager().get(ResourceLocation.fromNamespaceAndPath("excraft", "barrenrealmportal")).orElseThrow();
         template.placeInWorld(
                 server.overworld(),
                 new BlockPos(-4,-8,-4),
-                new BlockPos(0,server.overworld().getHeight(),0),
+                new BlockPos(0,0,0),
                 new StructurePlaceSettings(),
                 server.overworld().getRandom(),
                 0
                 );
+    }
+    public static void placeExitPortal(MinecraftServer server,int y) {
+        StructureTemplate template = server.getStructureManager().get(ResourceLocation.fromNamespaceAndPath("excraft", "barrenrealmportal")).orElseThrow();
+        template.placeInWorld(
+                server.getLevel(DimensionManager.EXCRAFT_LEVEL),
+                new BlockPos(-4,y - 8,-4),
+                new BlockPos(0,0,0),
+                new StructurePlaceSettings(),
+                server.overworld().getRandom(),
+                1
+        );
     }
 }

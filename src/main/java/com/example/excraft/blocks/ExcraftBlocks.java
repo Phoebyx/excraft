@@ -20,7 +20,7 @@ public class ExcraftBlocks {
     public static final DeferredBlock<StairBlock> UNBREAKABLE_SANDSTONE_STAIRS = register("unbreakable_sandstone_stairs", () -> unbreakableSandstoneStairsDefinition());
     public static final DeferredBlock<SlabBlock> UNBREAKABLE_SANDSTONE_SLABS = register("unbreakable_sandstone_slab", () -> unbreakableSandstoneSlabBlockDefinition());
     public static final DeferredBlock<Block> UNBREAKABLE_CHISELED_SANDSTONE = register("unbreakable_chiseled_sandstone", () -> unbreakableChiseledSandstoneDefinition());
-    public static final DeferredBlock<Block> EXCRAFT_PORTAL = register("exraft_portal", () -> excraftPortalBlockDefinition());
+    public static final DeferredBlock<Block> EXCRAFT_PORTAL = register("excraft_portal", () -> excraftPortalBlockDefinition());
 
     private static Block unbreakableSandstoneDefinition() {
         return new Block(

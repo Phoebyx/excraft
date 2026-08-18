@@ -25,6 +25,8 @@ public class Config {
             "c:player_workstations/furnaces",
             "c:player_workstations/crafting_tables"
     );
+    private static final List<String> defaultDisabledNoises = List.of(
+    );
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> DISABLED_WORKSTATIONS_IN_DIMENSION = BUILDER
             .comment("The list of workstations and blocks to disable placement of in the roguelike dimension")
@@ -34,6 +36,9 @@ public class Config {
             .comment("How long, in hours, should each dimension last for. Accepts decimal inputs for minutes.")
             .defineInRange("hours",(double) 1,0, 99999999);
 
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> NOISE_BLACKLIST = BUILDER
+            .comment("Prevent these dimensions from appearing")
+            .defineListAllowEmpty("noises", defaultDisabledNoises, () -> "", Config::validateName);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 

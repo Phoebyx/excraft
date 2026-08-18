@@ -10,16 +10,17 @@ import com.example.excraft.dimension.DisabledDimensionBlocks;
 import com.example.excraft.portal.PlaceOriginPortal;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.slf4j.Logger;
 
@@ -68,7 +69,7 @@ public class Excraft {
     public void onServerStarted(ServerStartedEvent event) {
          MinecraftServer server = event.getServer();
          if (server.overworld().getBlockState(new BlockPos(0,-3,0)).getBlock() != ExcraftBlocks.UNBREAKABLE_SANDSTONE.get()) {
-             PlaceOriginPortal.placeBarrenRealmPortal(server, event);
+             PlaceOriginPortal.placeBarrenRealmPortal(server);
          }
          if (!DimensionManager.doesDimensionExist(server)) {
              createDimension(event.getServer());
@@ -85,15 +86,19 @@ public class Excraft {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
     }
+    @SubscribeEvent
+    public void onServerStopped(ServerStoppingEvent event) {
+    }
 
     @SubscribeEvent
     public void onPreServerTick(ServerTickEvent.Pre event) {
         if (DimensionManager.doesDimensionExist(event.getServer())) {
-            Excraft.LOGGER.info("ItDoes!");
-            if (ExcraftTimer.getCurrentTimer(event.getServer()) <= 0) {
-                createDimension(event.getServer());
+            if (ExcraftTimer.getCurrentTimer(event.getServer()) <= 1) {
                 Excraft.LOGGER.info("Timer is up! Resetting Dimension");
+                createDimension(event.getServer());
             }
+        } else {
+            DimensionManager.createDimension(event.getServer());
         }
     }
 
@@ -159,19 +164,17 @@ public class Excraft {
 
     public void createDimension(MinecraftServer server) {
         if (DimensionManager.doesDimensionExist(server)) {
-            server.getLevel(DimensionManager.EXCRAFT_LEVEL).noSave = true;
+            Excraft.LOGGER.info("Deleting");
             deleteDimension(server);
         }
         DimensionManager.createDimension(server);
     }
 
     public void deleteDimension(MinecraftServer server) {
-         DimensionManager.deleteDimension(server);
-         DimensionManager.clearUnusedDimension(server);
-         int i = 0;
-         while (DimensionManager.areFilesDeleted(server)) {
-            i++;
-            if (i >= 3000) {break;}
-        }
+        try {
+            DimensionManager.deleteDimension(server);
+            DimensionManager.clearUnusedDimension(server);
+        } catch (Exception ignored) {}
+         Excraft.LOGGER.info("Deleted Old Dimension");
     }
 }

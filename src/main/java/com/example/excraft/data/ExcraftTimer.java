@@ -6,8 +6,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 
 public class ExcraftTimer {
+
     public static long getCurrentTimer(MinecraftServer server) {
-        long currentTimePassed = server.getLevel(DimensionManager.EXCRAFT_LEVEL).getGameTime();
+        long currentTimePassed = server.getLevel(DimensionManager.EXCRAFT_LEVEL).getGameTime() % timerInTicks();
         return timerInTicks() - currentTimePassed;
     }
 
@@ -22,6 +23,7 @@ public class ExcraftTimer {
         String timeString = String.format("%02d:%02d:%02d", hours, minutes, seconds);
         return new String("Current Timer:" + "\nIn Ticks: " + getCurrentTimer(server) + "\nIn Hours:Minutes:Seconds: " + timeString);
     }
+
     private static long timerInTicks() {
         return (long) (Config.WORLD_CYCLE.get() * 72000);
     }
