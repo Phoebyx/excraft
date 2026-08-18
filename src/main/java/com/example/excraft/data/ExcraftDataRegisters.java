@@ -3,6 +3,7 @@ package com.example.excraft.data;
 import com.example.excraft.Excraft;
 import com.example.excraft.blocks.DisabledDimensionBlocksTag;
 import com.example.excraft.blocks.ExcraftBlocks;
+import com.example.excraft.blocks.ExcraftPortalBlock;
 import com.example.excraft.dimension.DisabledDimensionBlocks;
 import com.example.excraft.items.ExcraftItems;
 import net.minecraft.DetectedVersion;
@@ -39,7 +40,8 @@ public class ExcraftDataRegisters {
          DeferredRegister<?>[] registers = {
                  ExcraftBlocks.BLOCKS,
                  ExcraftItems.ITEMS,
-                 ExcraftCreativeModeTab.CREATIVE_MODE_TABS
+                 ExcraftCreativeModeTab.CREATIVE_MODE_TABS,
+                 ExcraftPortalBlock.ATTACHMENT_TYPES
         };
         return registers;
     }

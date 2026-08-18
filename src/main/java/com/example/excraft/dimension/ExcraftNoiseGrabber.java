@@ -1,10 +1,12 @@
 package com.example.excraft.dimension;
 
+import com.example.excraft.Config;
 import com.example.excraft.Excraft;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -17,7 +19,9 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import org.apache.logging.log4j.core.jmx.Server;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class ExcraftNoiseGrabber {
@@ -35,8 +39,38 @@ public class ExcraftNoiseGrabber {
     public static ResourceKey<NoiseGeneratorSettings> getNoise(MinecraftServer server) {
         RegistryAccess registryAccess = server.registryAccess();
         Registry<NoiseGeneratorSettings> noiseSettings = registryAccess.registryOrThrow(Registries.NOISE_SETTINGS);
-        Optional<Holder.Reference<NoiseGeneratorSettings>> randomEntry = noiseSettings.getRandom(DimensionRandomizer.generateRandomFromSalt());
-        return randomEntry.orElseThrow().getKey();
+        List<ResourceKey<NoiseGeneratorSettings>> noiseList = getNoiseList(noiseSettings);
+        int randInt = DimensionRandomizer.generateRandomFromSalt().nextInt() % noiseList.size();
+        return noiseList.get(Math.abs(randInt));
+    }
+
+    private static List<ResourceKey<NoiseGeneratorSettings>> getNoiseList(Registry<NoiseGeneratorSettings> noiseSettings) {
+        List<ResourceKey<NoiseGeneratorSettings>> list = new ArrayList<>();
+        for (Map.Entry<ResourceKey<NoiseGeneratorSettings>, NoiseGeneratorSettings> entry : noiseSettings.entrySet()) {
+            if (!isNoiseInBlacklist(entry)) {
+                    list.addLast(entry.getKey());
+            }
+        }
+        return list;
+    }
+    private static boolean isNoiseInBlacklist(Map.Entry<ResourceKey<NoiseGeneratorSettings>,NoiseGeneratorSettings> entry) {
+        List<ResourceLocation> blacklist = returnNamespaceAndPath();
+        for (ResourceLocation blacklistEntry : blacklist) {
+            if (entry.getKey().location().toString().equals(blacklistEntry.toString())) {
+               return true;
+            }
+        }
+        return false;
+    }
+
+    private static List<ResourceLocation> returnNamespaceAndPath() {
+        List<ResourceLocation> validNoises = new ArrayList<>();
+        for (String toBeValidated : Config.NOISE_BLACKLIST.get()) {
+            String[] separated = toBeValidated.split(":");
+            validNoises.addLast(ResourceLocation.fromNamespaceAndPath(separated[0],separated[1]));
+        }
+        validNoises.addLast(ResourceLocation.fromNamespaceAndPath("excraft","null"));
+        return validNoises;
     }
 }
 //server.overworld().getRandom()

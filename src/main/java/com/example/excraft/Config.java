@@ -36,6 +36,10 @@ public class Config {
             .comment("How long, in hours, should each dimension last for. Accepts decimal inputs for minutes.")
             .defineInRange("hours",(double) 1,0, 99999999);
 
+    public static final ModConfigSpec.ConfigValue<Long> TPCOOLDOWN = BUILDER
+            .comment("How long, in seconds, should the tp cooldown be")
+            .defineInRange("hours",(long) 10,0, 99999999);
+
     public static final ModConfigSpec.ConfigValue<List<? extends String>> NOISE_BLACKLIST = BUILDER
             .comment("Prevent these dimensions from appearing")
             .defineListAllowEmpty("noises", defaultDisabledNoises, () -> "", Config::validateName);
