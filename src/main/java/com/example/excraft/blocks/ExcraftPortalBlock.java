@@ -20,21 +20,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.NetherPortalBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.portal.PortalShape;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
 import java.util.function.Supplier;
 
 public class ExcraftPortalBlock extends Block {
@@ -49,7 +49,7 @@ public class ExcraftPortalBlock extends Block {
     );
     public ExcraftPortalBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Direction.Axis.Z));
+        this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Direction.Axis.X));
         this.registerDefaultState(this.stateDefinition.any().setValue(this.getAgeProperty(), Integer.valueOf(0)));
     }
 
@@ -62,8 +62,11 @@ public class ExcraftPortalBlock extends Block {
         return COLOR;
     }
 
-    public BlockState getStateForAge(int age) {
-        return this.defaultBlockState().setValue(this.getAgeProperty(), Integer.valueOf(age));
+    public BlockState getStateForColor(int color) {
+        return this.defaultBlockState().setValue(this.getAgeProperty(), Integer.valueOf(color));
+    }
+    public BlockState updateStateForColor(int color, BlockState state) {
+        return state.setValue(this.getAgeProperty(), Integer.valueOf(color));
     }
 
     public int getAge(BlockState state) {
@@ -82,9 +85,8 @@ public class ExcraftPortalBlock extends Block {
     @Override
     protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         int currentTimerColour = ExcraftTimer.intPortalBlockColor(level);
-        Excraft.LOGGER.info("CurrentTimerColor: " + currentTimerColour);
         if (this.getAge(state) != currentTimerColour); {
-            level.setBlock(pos, this.getStateForAge(currentTimerColour),2);
+           level.setBlock(pos, this.updateStateForColor(currentTimerColour,state),2);
         }
     }
 
@@ -185,6 +187,26 @@ public class ExcraftPortalBlock extends Block {
             }
 
             level.addParticle(ParticleTypes.PORTAL, d0, d1, d2, d3, d4, d5);
+        }
+    }
+    @Override
+    protected @NotNull BlockState rotate(BlockState state, Rotation rot) {
+        switch (rot) {
+            case COUNTERCLOCKWISE_90:
+            case CLOCKWISE_90:
+                switch ((Direction.Axis)state.getValue(AXIS)) {
+                    case Z -> {
+                        return (BlockState)state.setValue(AXIS, Direction.Axis.X);
+                    }
+                    case X -> {
+                        return (BlockState)state.setValue(AXIS, Direction.Axis.Z);
+                    }
+                    default -> {
+                        return state;
+                    }
+                }
+            default:
+                return state;
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.excraft.data;
 
+import com.example.excraft.Config;
 import com.example.excraft.Excraft;
 import com.example.excraft.blocks.DisabledDimensionBlocksTag;
 import com.example.excraft.blocks.ExcraftBlocks;
@@ -13,15 +14,20 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.metadata.PackMetadataGenerator;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.util.InclusiveRange;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.level.levelgen.presets.WorldPreset;
+import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -54,5 +60,12 @@ public class ExcraftDataRegisters {
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
     }
 
+    public static ResourceKey<WorldPreset> resourceKey() {
+        if (Config.REPLACE_WORLD_SCREEN.get()) {
+            return ResourceKey.create(Registries.WORLD_PRESET, ResourceLocation.fromNamespaceAndPath("excraft", "barrenrealms"));
+        } else {
+            return WorldPresets.NORMAL;
+        }
+    }
 }
- /*  */
+/*  */

@@ -44,7 +44,7 @@ public class ExcraftTimer {
         return colorIndexSelected;
     }
     public static boolean isLastColorIndexSelectedSameAsLast(int colorIndexSelected, ServerTickEvent event) {
-        boolean portalCheckCycleTime = event.getServer().overworld().getGameTime() % ((int) timerInTicks()/Config.PORTAL_COLOR_TICK_CYCLE.get()) == 1;
+        boolean portalCheckCycleTime = event.getServer().overworld().getGameTime() % Config.PORTAL_COLOR_TICK_CYCLE.get() == 1;
         return lastColorIndexSelected != colorIndexSelected && portalCheckCycleTime;
     }
 }

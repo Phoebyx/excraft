@@ -27,7 +27,7 @@ public class PortalPlacerUtil {
         minHeight = level.getMinBuildHeight();
     }
     public int findBlockFromTop(Block block) {
-        int portalFoundAtY = Integer.MAX_VALUE;
+        int portalFoundAtY = 9999999;
         for (int i = maxHeight; i >= minHeight; i--) {
             Block currentBlock = level.getBlockState(new BlockPos(0,i,0)).getBlock();
             if (currentBlock == block) {
@@ -38,11 +38,12 @@ public class PortalPlacerUtil {
         return portalFoundAtY;
     }
     public int findBlockFromBottom(Block block) {
-        int portalFoundAtY = Integer.MAX_VALUE;
+        int portalFoundAtY = 9999999;
         for (int i = minHeight; i <= maxHeight; i++) {
-            Block currentBlock = level.getBlockState(new BlockPos(0,i,0)).getBlock();
-            if (currentBlock == block) {
+            BlockState currentBlock = level.getBlockState(new BlockPos(0,i,0));
+            if (currentBlock.is(block)) {
                 portalFoundAtY = i;
+                Excraft.LOGGER.info(String.valueOf(i));
                 return portalFoundAtY;
             }
         }

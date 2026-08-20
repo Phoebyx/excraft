@@ -29,6 +29,9 @@ public class Config {
             "minecraft:nether",
             "minecraft:end"
     );
+    public static final ModConfigSpec.ConfigValue<Boolean> REPLACE_WORLD_SCREEN = BUILDER
+            .comment("Make Barren Realms the default world preset")
+            .define("worldpresetbool",true);
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> DISABLED_WORKSTATIONS_IN_DIMENSION = BUILDER
             .comment("The list of workstations and blocks to disable placement of in the roguelike dimension")

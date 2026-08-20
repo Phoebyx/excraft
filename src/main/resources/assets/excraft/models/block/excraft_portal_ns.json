@@ -11,5 +11,6 @@
                 "south": { "uv": [ 0, 0, 16, 16 ], "texture": "#portal","tintindex": 1}
             }
         }
-    ]
+    ],
+    "render_type": "minecraft:translucent"
 }
