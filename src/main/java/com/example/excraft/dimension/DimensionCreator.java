@@ -1,9 +1,8 @@
 package com.example.excraft.dimension;
 
+import com.example.excraft.dimension.randomizers.DimensionBiomes;
+import com.example.excraft.dimension.randomizers.ExcraftNoiseGrabber;
 import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.DimensionTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.BlockTags;
@@ -32,7 +31,7 @@ public class DimensionCreator {
 
     public LevelStem makeStem(DimensionType dimensionType, MinecraftServer server) {
         BiomeSource source = DimensionBiomes.buildRandomBiomes(server);
-        NoiseBasedChunkGenerator excraftRandomNoise = ExcraftNoiseGrabber.buildRandomNoise(source,server);
+        ModifiedNoiseBasedChunkGenerator excraftRandomNoise = ExcraftNoiseGrabber.buildRandomNoise(source,server);
         Holder<DimensionType> hdimensionType = server.registryAccess().holderOrThrow(BuiltinDimensionTypes.OVERWORLD);
         return new LevelStem(hdimensionType, excraftRandomNoise);
     }

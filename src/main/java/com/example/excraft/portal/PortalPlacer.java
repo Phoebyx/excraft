@@ -7,7 +7,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
 public class PortalPlacer {
-    public static void createPortalAndReturnLocation(Level level) {
+    public static void createPortal(Level level) {
         PortalPlacerUtil blockUtil = new PortalPlacerUtil(level);
         int lowestBedrockFoundAtY = blockUtil.findBlockFromBottom(Blocks.BEDROCK);
         int highestBedrockFoundAtY = blockUtil.findBlockFromTop(Blocks.BEDROCK);

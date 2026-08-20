@@ -15,5 +15,8 @@
   "excraft.configuration.magicNumberIntroduction": "Magic Number Text",
   "excraft.configuration.magicNumber": "Magic Number",
   "generator.excraft.barrenrealms" : "Barren Realms",
-  "biome.excraft.barrenrealm" : "Barren Realm"
+  "biome.excraft.barrenrealm" : "Barren Realm",
+  "excraft.configuration.worldcycle": "World Cycle Timer",
+  "excraft.configuration.tpcooldown": "TP Cooldown Time",
+  "excraft.configuration.noiseblacklist": "Noises Blacklist"
 }

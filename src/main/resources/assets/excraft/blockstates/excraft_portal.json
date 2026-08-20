@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "excraft:block/excraft_portal_ns"
+    },
+    "axis=z": {
+      "model": "excraft:block/excraft_portal_ew"
+    }
+  }
+}

@@ -26,6 +26,8 @@ public class Config {
             "c:player_workstations/crafting_tables"
     );
     private static final List<String> defaultDisabledNoises = List.of(
+            "minecraft:nether",
+            "minecraft:end"
     );
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> DISABLED_WORKSTATIONS_IN_DIMENSION = BUILDER
@@ -34,15 +36,19 @@ public class Config {
 
     public static final ModConfigSpec.ConfigValue<Double> WORLD_CYCLE = BUILDER
             .comment("How long, in hours, should each dimension last for. Accepts decimal inputs for minutes.")
-            .defineInRange("hours",(double) 1,0, 99999999);
+            .defineInRange("worldcycle",(double) 1,0, 99999999);
+
+    public static final ModConfigSpec.ConfigValue<Long> PORTAL_COLOR_TICK_CYCLE = BUILDER
+            .comment("How many ticks should it take to update the portal colour based on the current timer.")
+            .defineInRange("portaltickcycle", 360L,20,99999999);
 
     public static final ModConfigSpec.ConfigValue<Long> TPCOOLDOWN = BUILDER
             .comment("How long, in seconds, should the tp cooldown be")
-            .defineInRange("hours",(long) 10,0, 99999999);
+            .defineInRange("tpcooldown",(long) 10,0, 99999999);
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> NOISE_BLACKLIST = BUILDER
             .comment("Prevent these dimensions from appearing")
-            .defineListAllowEmpty("noises", defaultDisabledNoises, () -> "", Config::validateName);
+            .defineListAllowEmpty("noiseblacklist", defaultDisabledNoises, () -> "", Config::validateName);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 

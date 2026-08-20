@@ -1,27 +1,33 @@
 package com.example.excraft;
 
 import com.example.excraft.blocks.ExcraftBlocks;
+import com.example.excraft.blocks.ExcraftPortalTint;
 import com.example.excraft.data.ExcraftCreativeModeTab;
 import com.example.excraft.data.ExcraftDataRegisters;
 import com.example.excraft.data.ExcraftTimer;
-import com.example.excraft.dimension.DimensionManager;
+import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.dimension.DimensionRandomizer;
 import com.example.excraft.dimension.DisabledDimensionBlocks;
+//import com.example.excraft.infiniverse.internal.UpdateDimensionsPacket;
 import com.example.excraft.portal.PlaceOriginPortal;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.commoble.infiniverse.api.InfiniverseAPI;
+import net.commoble.infiniverse.internal.DimensionManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -35,7 +41,9 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
+import java.sql.Time;
 import java.util.Set;
+import java.util.Timer;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Excraft.MODID)
@@ -50,7 +58,7 @@ public class Excraft {
         modEventBus.addListener(this::commonSetup);
         ExcraftDataRegisters.registerRegisters(modEventBus);
         modEventBus.addListener(ExcraftDataRegisters::onGatherData);
-
+        modEventBus.addListener(this::registerTint);
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (excraft) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
@@ -60,8 +68,16 @@ public class Excraft {
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         modEventBus.addListener(this::addCreative);
+       // modEventBus.addListener(this::onRegisterPayloadHandlers);
     }
-
+/*
+    void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event)
+    {
+        event.registrar(MODID)
+                .optional()
+                .playToClient(UpdateDimensionsPacket.TYPE, UpdateDimensionsPacket.STREAM_CODEC, UpdateDimensionsPacket::handle);
+    }
+*/
     private void commonSetup(FMLCommonSetupEvent event) {
         // Some common setup code
     }
@@ -71,11 +87,16 @@ public class Excraft {
          if (server.overworld().getBlockState(new BlockPos(0,-3,0)).getBlock() != ExcraftBlocks.UNBREAKABLE_SANDSTONE.get()) {
              PlaceOriginPortal.placeBarrenRealmPortal(server);
          }
-         if (!DimensionManager.doesDimensionExist(server)) {
+         if (!ExcraftDimensionManager.doesDimensionExist(server)) {
              createDimension(event.getServer());
          }
     }
 
+    public void registerTint(RegisterColorHandlersEvent.Block event) {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ExcraftPortalTint.registerBlockColorHandlers(event);
+        }
+    }
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         ExcraftCreativeModeTab.addCreative(event);
     }
@@ -92,13 +113,19 @@ public class Excraft {
 
     @SubscribeEvent
     public void onPreServerTick(ServerTickEvent.Pre event) {
-        if (DimensionManager.doesDimensionExist(event.getServer())) {
+        if (ExcraftDimensionManager.doesDimensionExist(event.getServer())) {
+            int getColorIndex = ExcraftTimer.intPortalBlockColor(event.getServer().overworld());
+            if (ExcraftTimer.isLastColorIndexSelectedSameAsLast(getColorIndex,event)) {
+                ExcraftTimer.updateLastColorIndexSelected(getColorIndex);
+                ExcraftPortalTint.updatePortalColorOnTickSchedule(event);
+            }
             if (ExcraftTimer.getCurrentTimer(event.getServer()) <= 1) {
                 Excraft.LOGGER.info("Timer is up! Resetting Dimension");
                 createDimension(event.getServer());
+                ExcraftPortalTint.updatePortalColorOnTickSchedule(event);
             }
         } else {
-            DimensionManager.createDimension(event.getServer());
+            ExcraftDimensionManager.createDimension(event.getServer());
         }
     }
 
@@ -154,8 +181,8 @@ public class Excraft {
     private int tpPlayerToExcraft(CommandContext<CommandSourceStack> context) {
          MinecraftServer server = context.getSource().getServer();
          Player target = context.getSource().getPlayer();
-         if (target.level() != server.getLevel(DimensionManager.EXCRAFT_LEVEL)) {
-             target.teleportTo(server.getLevel(DimensionManager.EXCRAFT_LEVEL), target.getX(),target.getY(),target.getZ(),Set.of(),0,0);
+         if (target.level() != server.getLevel(ExcraftDimensionManager.EXCRAFT_LEVEL)) {
+             target.teleportTo(server.getLevel(ExcraftDimensionManager.EXCRAFT_LEVEL), target.getX(),target.getY(),target.getZ(),Set.of(),0,0);
          } else {
              target.teleportTo(server.overworld(), target.getX(),target.getY(),target.getZ(),Set.of(),0,0);
          }
@@ -163,17 +190,17 @@ public class Excraft {
     }
 
     public void createDimension(MinecraftServer server) {
-        if (DimensionManager.doesDimensionExist(server)) {
+        if (ExcraftDimensionManager.doesDimensionExist(server)) {
             Excraft.LOGGER.info("Deleting");
             deleteDimension(server);
         }
-        DimensionManager.createDimension(server);
+        ExcraftDimensionManager.createDimension(server);
     }
 
     public void deleteDimension(MinecraftServer server) {
         try {
-            DimensionManager.deleteDimension(server);
-            DimensionManager.clearUnusedDimension(server);
+            ExcraftDimensionManager.deleteDimension(server);
+            ExcraftDimensionManager.clearUnusedDimension(server);
         } catch (Exception ignored) {}
          Excraft.LOGGER.info("Deleted Old Dimension");
     }

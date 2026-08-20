@@ -2,8 +2,8 @@ package com.example.excraft.dimension;
 
 import com.example.excraft.Excraft;
 import com.example.excraft.blocks.ExcraftPortalBlock;
-import com.example.excraft.portal.PlaceOriginPortal;
-import com.example.excraft.portal.PortalPlacer;
+//import com.example.excraft.infiniverse.api.InfiniverseAPI;
+//import com.example.excraft.infiniverse.internal.DimensionManager;
 import net.commoble.infiniverse.api.InfiniverseAPI;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -21,7 +21,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 
 
-public class DimensionManager {
+public class ExcraftDimensionManager {
     public static final ResourceKey<Level> EXCRAFT_LEVEL = ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(Excraft.MODID, "excraft"));
 
     public static void createDimension(MinecraftServer server) {
