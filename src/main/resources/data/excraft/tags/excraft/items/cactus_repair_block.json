@@ -1,0 +1,14 @@
+{
+  "values": [
+    {
+      "id": "excraft:cactus_repair_block",
+      "required": false
+    },
+    "minecraft:cactus"
+  ],
+
+  "replace": false,
+
+  "remove": [
+  ]
+}

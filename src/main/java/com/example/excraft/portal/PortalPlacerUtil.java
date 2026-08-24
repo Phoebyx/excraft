@@ -27,7 +27,7 @@ public class PortalPlacerUtil {
         minHeight = level.getMinBuildHeight();
     }
     public int findBlockFromTop(Block block) {
-        int portalFoundAtY = 9999999;
+        int portalFoundAtY = minHeight - 1;
         for (int i = maxHeight; i >= minHeight; i--) {
             Block currentBlock = level.getBlockState(new BlockPos(0,i,0)).getBlock();
             if (currentBlock == block) {
@@ -38,7 +38,7 @@ public class PortalPlacerUtil {
         return portalFoundAtY;
     }
     public int findBlockFromBottom(Block block) {
-        int portalFoundAtY = 9999999;
+        int portalFoundAtY = maxHeight + 1;
         for (int i = minHeight; i <= maxHeight; i++) {
             BlockState currentBlock = level.getBlockState(new BlockPos(0,i,0));
             if (currentBlock.is(block)) {

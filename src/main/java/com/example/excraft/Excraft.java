@@ -1,6 +1,5 @@
 package com.example.excraft;
 
-import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.blocks.ExcraftPortalTint;
 import com.example.excraft.data.ExcraftCreativeModeTab;
 import com.example.excraft.data.ExcraftDataRegisters;
@@ -9,13 +8,12 @@ import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.dimension.DimensionRandomizer;
 import com.example.excraft.dimension.DisabledDimensionBlocks;
 //import com.example.excraft.infiniverse.internal.UpdateDimensionsPacket;
+import com.example.excraft.inventory.DurabilityChanges;
 import com.example.excraft.portal.PlaceOriginPortal;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.commoble.infiniverse.internal.DimensionManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -27,7 +25,7 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
@@ -41,9 +39,7 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
-import java.sql.Time;
 import java.util.Set;
-import java.util.Timer;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Excraft.MODID)
@@ -59,12 +55,16 @@ public class Excraft {
         ExcraftDataRegisters.registerRegisters(modEventBus);
         modEventBus.addListener(ExcraftDataRegisters::onGatherData);
         modEventBus.addListener(this::registerTint);
+        modEventBus.addListener(this::registerRegistries);
         // Register ourselves for server and other game events we are interested in.
         // Note that this is necessary if and only if we want *this* class (excraft) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
         NeoForge.EVENT_BUS.addListener(this::onRegisterCommands);
         NeoForge.EVENT_BUS.addListener(DisabledDimensionBlocks::preventDisabledBlocks);
+        NeoForge.EVENT_BUS.addListener(DurabilityChanges::recordWhoLeft);
+        NeoForge.EVENT_BUS.addListener(DurabilityChanges::damageByPortalReturn);
+
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         modEventBus.addListener(this::addCreative);
@@ -81,18 +81,21 @@ public class Excraft {
     private void commonSetup(FMLCommonSetupEvent event) {
         // Some common setup code
     }
+
     @SubscribeEvent
-    public void onServerStarted(ServerStartedEvent event) {
+    private void onServerStarted(ServerStartedEvent event) {
          MinecraftServer server = event.getServer();
-         if (server.overworld().getBlockState(new BlockPos(0,-3,0)).getBlock() != ExcraftBlocks.UNBREAKABLE_SANDSTONE.get()) {
-             PlaceOriginPortal.placeBarrenRealmPortal(server);
-         }
+         PlaceOriginPortal.placeBarrenRealmPortal(server);
          if (!ExcraftDimensionManager.doesDimensionExist(server)) {
              createDimension(event.getServer());
          }
     }
+     // on the mod event bus
+    public void registerRegistries(NewRegistryEvent event) {
+        ExcraftDataRegisters.registerRegistries(event);
+    }
 
-    public void registerTint(RegisterColorHandlersEvent.Block event) {
+    private void registerTint(RegisterColorHandlersEvent.Block event) {
         if (FMLEnvironment.dist == Dist.CLIENT) {
             ExcraftPortalTint.registerBlockColorHandlers(event);
         }

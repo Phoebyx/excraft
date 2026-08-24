@@ -25,13 +25,51 @@ public class Config {
             "c:player_workstations/furnaces",
             "c:player_workstations/crafting_tables"
     );
+
     private static final List<String> defaultDisabledNoises = List.of(
             "minecraft:nether",
-            "minecraft:end"
+            "minecraft:end",
+            "excraft:barrenrealm"
     );
+
+    private static final List<String> defaultDisabledBiomes = List.of(
+            "excraft:barrenrealm"
+    );
+
+    private static final List<String> guarenteedBiomes = List.of(
+            "minecraft:river",
+            "minecraft:ocean",
+            "minecraft:snowy_slopes",
+            "minecraft:frozen_peaks",
+            "minecraft:jagged_peaks",
+            "minecraft:stony_peaks",
+            "minecraft:frozen_river",
+            "minecraft:beach",
+            "minecraft:snowy_beach",
+            "minecraft:stony_shore",
+            "minecraft:snowy_beach",
+            "minecraft:stony_shore",
+            "minecraft:warm_ocean",
+            "minecraft:lukewarm_ocean",
+            "minecraft:deep_lukewarm_ocean",
+            "minecraft:deep_cold_ocean",
+            "minecraft:cold_ocean",
+            "minecraft:snowy_beach",
+            "minecraft:frozen_ocean",
+            "minecraft:deep_frozen_ocean",
+            "minecraft:dripstone_caves",
+            "minecraft:lush_caves",
+            "minecraft:deep_dark",
+            "minecraft:deep_ocean"
+            );
+
     public static final ModConfigSpec.ConfigValue<Boolean> REPLACE_WORLD_SCREEN = BUILDER
             .comment("Make Barren Realms the default world preset")
             .define("worldpresetbool",true);
+
+    public static final ModConfigSpec.ConfigValue<Boolean> DISABLE_GUARENTEED = BUILDER
+            .comment("Disable guaranteed list, making it act like a blacklist")
+            .define("disableguaranteed",false);
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> DISABLED_WORKSTATIONS_IN_DIMENSION = BUILDER
             .comment("The list of workstations and blocks to disable placement of in the roguelike dimension")
@@ -52,6 +90,18 @@ public class Config {
     public static final ModConfigSpec.ConfigValue<List<? extends String>> NOISE_BLACKLIST = BUILDER
             .comment("Prevent these dimensions from appearing")
             .defineListAllowEmpty("noiseblacklist", defaultDisabledNoises, () -> "", Config::validateName);
+
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> BIOME_BLACKLIST = BUILDER
+            .comment("Prevent these biomes from appearing")
+            .defineListAllowEmpty("defaultdisabledbiomes", defaultDisabledBiomes, () -> "", Config::validateName);
+
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> GUARENTEED_BIOMES = BUILDER
+            .comment("Guarentee these biomes from showing up, not being included on the roll")
+            .defineListAllowEmpty("guarenteedbiomes", guarenteedBiomes, () -> "", Config::validateName);
+
+    public static final ModConfigSpec.ConfigValue<Integer> BIOMESTOROLL = BUILDER
+            .comment("How many biomes should it roll between")
+            .defineInRange("biomestoroll",3,1, 99999999);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 

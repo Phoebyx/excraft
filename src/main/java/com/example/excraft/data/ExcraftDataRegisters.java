@@ -2,23 +2,17 @@ package com.example.excraft.data;
 
 import com.example.excraft.Config;
 import com.example.excraft.Excraft;
-import com.example.excraft.blocks.DisabledDimensionBlocksTag;
 import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.blocks.ExcraftPortalBlock;
-import com.example.excraft.dimension.DisabledDimensionBlocks;
+import com.example.excraft.dimension.WorldModifierManager;
 import com.example.excraft.items.ExcraftItems;
-import net.minecraft.DetectedVersion;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.metadata.PackMetadataGenerator;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
-import net.minecraft.util.InclusiveRange;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.levelgen.presets.WorldPreset;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
@@ -27,9 +21,8 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import org.spongepowered.asm.mixin.Mixin;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class ExcraftDataRegisters {
@@ -41,7 +34,19 @@ public class ExcraftDataRegisters {
             register.register(modEventBus);
         }
     }
-
+    public static void registerRegistries(NewRegistryEvent event) {
+        Registry<?>[] registries = registries();
+        for (Registry<?> registry: registries) {
+            event.register(registry);
+        }
+    }
+    private static Registry<?>[] registries() {
+        Registry<?>[] registries = {
+                WorldModifierManager.WORLD_MODIFIER_REGISTRY,
+                WorldModifierManager.WORLD_MODIFIER_TYPE_REGISTRY
+        };
+        return registries;
+    }
     private static DeferredRegister<?>[] registers() {
          DeferredRegister<?>[] registers = {
                  ExcraftBlocks.BLOCKS,

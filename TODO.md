@@ -9,17 +9,17 @@ Needs testing !
   * Apply to Aeronatics Airships Inventories
 * [Dimension:]
   * Randomize available biomes in world (Either Single in whole world or x number of biomes)
-  * Implement Portal
+  * Implement Portal DONE (Portal Implementation Not the best)
   * Fix Distant Horizons/Other mods preventing deletion of files
-  * World has a randomized selection of noise, but also should randomize the noise itself depending on the seed
+  * World has a randomized selection of noise, but also should randomize the noise itself depending on the seed DONE
   * Implement some terramath compat ?
   * Implement limited world size ?
     * Function to make it a disc world for example.
   * Aeronautics compatibility ! (Not just crashes, but ex: prevent them from being destroyed)
   * Resourceless overworld DONE (ish, will want to make it have some neater terrain)
   * No crafting/resource processing in dimension (Config) (Logic Done)
-  * Noise Blacklist/Whitelist
-  * More Noise types
+  * Noise Blacklist/Whitelist Blacklist Done
+  * More Noise types 
   * Special Dimension Types
     * Perma Night/Day/Dusk
     * Extreme Fog
@@ -31,7 +31,7 @@ Needs testing !
     * Sun/Moon size increase and destruction of environment
     * Enemies get stronger
   * Infection mod (Undetermined) compat
-  * Configurable Reset Timer
+  * Configurable Reset Timer DONE
   * Ore Randomisation
 * [Uncategorized:]
   * Nether as unlock

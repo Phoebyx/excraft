@@ -3,26 +3,11 @@
     "minecraft:overworld": {
       "type": "minecraft:overworld",
       "generator": {
-        "type": "minecraft:flat",
-        "settings": {
-          "biome": "excraft:barrenrealm",
-          "features": true,
-          "lakes": false,
-          "layers": [
-            {
-              "block": "minecraft:bedrock",
-              "height": 1
-            },
-            {
-              "block": "minecraft:sandstone",
-              "height": 58
-            },
-            {
-              "block": "minecraft:sand",
-              "height": 5
-            }
-          ],
-          "structure_overrides": []
+        "type": "minecraft:noise",
+        "settings": "excraft:barrenrealm",
+        "biome_source": {
+          "type": "minecraft:fixed",
+          "biome": "excraft:barrenrealm"
         }
       }
     }

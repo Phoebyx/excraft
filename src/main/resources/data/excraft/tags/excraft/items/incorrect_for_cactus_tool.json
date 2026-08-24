@@ -1,0 +1,15 @@
+{
+  "values": [
+    {
+      "id": "excraft:incorrect_for_cactus_tool",
+      "required": false
+    },
+    "#minecraft:*"
+  ],
+
+  "replace": false,
+
+  "remove": [
+    "#minecraft:logs"
+  ]
+}

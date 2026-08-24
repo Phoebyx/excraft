@@ -30,20 +30,21 @@ public class NoiseRouterRandomizer {
     private DensityFunction veinRidged;
     private DensityFunction veinGap;
     private MinecraftServer server;
+    private NoiseGeneratorSettings overworldNoise;
 
-    public NoiseRouterRandomizer(NoiseGeneratorSettings settings,MinecraftServer server){
+    public NoiseRouterRandomizer(NoiseGeneratorSettings settings,NoiseGeneratorSettings overworldNoise,MinecraftServer server){
         this.currentNoiseRouter = settings.noiseRouter();
         this.server = server;
-        this.barrierNoise = currentNoiseRouter.barrierNoise();
+        this.barrierNoise = DensityFunctions.add(currentNoiseRouter.barrierNoise(),overworldNoise.noiseRouter().barrierNoise());
         this.fluidLevelFloodednessNoise = currentNoiseRouter.fluidLevelFloodednessNoise();
         this.fluidLevelSpreadNoise = currentNoiseRouter.fluidLevelSpreadNoise();
         this.lavaNoise = currentNoiseRouter.lavaNoise();
         this.temperature = currentNoiseRouter.temperature();
         this.vegetation = currentNoiseRouter.vegetation();
-        this.continents = currentNoiseRouter.continents();
-        this.erosion = currentNoiseRouter.erosion();
-        this.depth = currentNoiseRouter.depth();
-        this.ridges = currentNoiseRouter.ridges();
+        this.continents = DensityFunctions.add(currentNoiseRouter.continents(),overworldNoise.noiseRouter().continents());
+        this.erosion = DensityFunctions.add(currentNoiseRouter.erosion(),overworldNoise.noiseRouter().erosion());
+        this.depth = DensityFunctions.add(currentNoiseRouter.depth(),overworldNoise.noiseRouter().depth());
+        this.ridges = DensityFunctions.add(currentNoiseRouter.ridges(),overworldNoise.noiseRouter().ridges());
         this.initialDensityWithoutJaggedness = currentNoiseRouter.initialDensityWithoutJaggedness();
         this.finalDensity = currentNoiseRouter.finalDensity();
         this.veinToggle = currentNoiseRouter.veinToggle();

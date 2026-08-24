@@ -1,5 +1,6 @@
 package com.example.excraft.portal;
 
+import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -8,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
@@ -19,10 +21,13 @@ public class PlaceOriginPortal {
     public static final ResourceKey<Structure> PORTALSTRUCTURE = ResourceKey.create(Registries.STRUCTURE,ResourceLocation.fromNamespaceAndPath("excraft", "barrenrealmsportal"));
 
     public static void placeBarrenRealmPortal(MinecraftServer server) {
+        PortalPlacerUtil blockUtil = new PortalPlacerUtil(server.overworld());
+        if (blockUtil.findBlockFromBottom(ExcraftBlocks.EXCRAFT_PORTAL.get()) < server.overworld().getMaxBuildHeight()) {return;}
         StructureTemplate template = server.getStructureManager().get(ResourceLocation.fromNamespaceAndPath("excraft", "barrenrealmportal")).orElseThrow();
+        int height = server.overworld().getHeight(Heightmap.Types.WORLD_SURFACE_WG,0,0);
         template.placeInWorld(
                 server.overworld(),
-                new BlockPos(-4,-8,-4),
+                new BlockPos(-4,height - 8,-4),
                 new BlockPos(0,0,0),
                 new StructurePlaceSettings(),
                 server.overworld().getRandom(),

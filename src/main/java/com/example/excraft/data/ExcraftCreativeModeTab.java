@@ -2,6 +2,7 @@ package com.example.excraft.data;
 
 import com.example.excraft.Excraft;
 import com.example.excraft.blocks.ExcraftBlocks;
+import com.example.excraft.items.ExcraftItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -25,6 +26,7 @@ public class ExcraftCreativeModeTab {
                 output.accept(ExcraftBlocks.UNBREAKABLE_SANDSTONE_STAIRS.get());
                 output.accept(ExcraftBlocks.UNBREAKABLE_SANDSTONE_SLABS.get());
                 output.accept(ExcraftBlocks.UNBREAKABLE_CHISELED_SANDSTONE.get());
+                output.accept(ExcraftItems.CACTUS_AXE.get());
                 // Add the example item to the tab. For your own tabs, this method is preferred over the event
             }).build()
     );

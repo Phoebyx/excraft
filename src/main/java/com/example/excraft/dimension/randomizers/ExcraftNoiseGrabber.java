@@ -61,11 +61,13 @@ public class ExcraftNoiseGrabber {
 
     private static List<ResourceLocation> returnNamespaceAndPath() {
         List<ResourceLocation> validNoises = new ArrayList<>();
-        for (String toBeValidated : Config.NOISE_BLACKLIST.get()) {
-            String[] separated = toBeValidated.split(":");
-            validNoises.addLast(ResourceLocation.fromNamespaceAndPath(separated[0],separated[1]));
-        }
-        validNoises.addLast(ResourceLocation.fromNamespaceAndPath("excraft","null"));
+        try {
+            for (String toBeValidated : Config.NOISE_BLACKLIST.get()) {
+                String[] separated = toBeValidated.split(":");
+                validNoises.addLast(ResourceLocation.fromNamespaceAndPath(separated[0], separated[1]));
+            }
+        } catch (ArrayIndexOutOfBoundsException ignored) {}
+        validNoises.addLast(ResourceLocation.fromNamespaceAndPath("excraft", "barrenrealm"));
         return validNoises;
     }
 }

@@ -11,7 +11,7 @@ import org.apache.logging.log4j.core.jmx.Server;
 import java.util.logging.Level;
 
 public class ExcraftTimer {
-    private static int lastColorIndexSelected = 0;
+    private static int lastColorIndexSelected = -1;
 
     public static long getCurrentTimer(MinecraftServer server) {
         long currentTimePassed = server.getLevel(ExcraftDimensionManager.EXCRAFT_LEVEL).getGameTime() % timerInTicks();

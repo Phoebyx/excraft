@@ -7,6 +7,7 @@ import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.portal.PlaceOriginPortal;
 import com.example.excraft.portal.PortalPlacerUtil;
 import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,6 +16,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -31,6 +34,7 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.attachment.AttachmentType;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -47,6 +51,8 @@ public class ExcraftPortalBlock extends Block {
     private static final Supplier<AttachmentType<Integer>> LASTTPTIME = ATTACHMENT_TYPES.register(
             "lasttptime", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).build()
     );
+    private static boolean areChunksForced = false;
+
     public ExcraftPortalBlock(Properties properties) {
         super(properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(AXIS, Direction.Axis.X));
@@ -88,6 +94,11 @@ public class ExcraftPortalBlock extends Block {
         if (this.getAge(state) != currentTimerColour); {
            level.setBlock(pos, this.updateStateForColor(currentTimerColour,state),2);
         }
+        LongSet forcedChunks = level.getForcedChunks();
+        if (!areChunksForced) {
+            level.setChunkForced(pos.getX(),pos.getZ(),true);
+            areChunksForced = true;
+        }
     }
 
     @Override
@@ -100,7 +111,7 @@ public class ExcraftPortalBlock extends Block {
 
     @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
-        if (isEntityInCooldown(entity,level)) {
+        if (isEntityInCooldown(entity,level) || entity instanceof ItemEntity) {
             return;
         }
         try {
@@ -149,6 +160,7 @@ public class ExcraftPortalBlock extends Block {
         } else {
             int a = (level.getMaxBuildHeight() + level.getMinBuildHeight())/2;
             int b = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG,0,0);
+            if (b > level.getMaxBuildHeight() - 10) {b = 0;}
             setPortalAtY = Math.max(a,b);
             Excraft.LOGGER.info("Other/Sky " + setPortalAtY);
         }

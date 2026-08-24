@@ -6,6 +6,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -28,7 +29,6 @@ public class ExcraftBlocks {
                         .destroyTime(-1)
                         .explosionResistance(3600000)
                         .sound(SoundType.STONE)
-                        .lightLevel(state -> 7)
                         .friction(0.6F)
         );
     }
@@ -38,7 +38,6 @@ public class ExcraftBlocks {
                 Block.Properties.ofFullCopy(Blocks.SANDSTONE_STAIRS)
                         .destroyTime(-1)
                         .explosionResistance(3600000)
-                        .lightLevel(state -> 7)
         );
     }
     private static SlabBlock unbreakableSandstoneSlabBlockDefinition() {
@@ -46,7 +45,6 @@ public class ExcraftBlocks {
                 Block.Properties.ofFullCopy(Blocks.SANDSTONE_SLAB)
                         .destroyTime(-1)
                         .explosionResistance(3600000)
-                        .lightLevel(state -> 7)
         );
     }
     private static Block unbreakableChiseledSandstoneDefinition() {
@@ -55,7 +53,6 @@ public class ExcraftBlocks {
                         .destroyTime(-1)
                         .explosionResistance(3600000)
                         .sound(SoundType.STONE)
-                        .lightLevel(state -> 7)
                         .friction(0.6F)
         );
     }
@@ -70,10 +67,14 @@ public class ExcraftBlocks {
         );
     }
     private static ExcraftPortalBlock excraftPortalBlockDefinition() {
-        return new ExcraftPortalBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.NETHER_PORTAL)
+        return new ExcraftPortalBlock(BlockBehaviour.Properties.of()
                 .destroyTime(-1)
                 .explosionResistance(3600000)
-                .lightLevel(state -> 7)
+                .lightLevel(state -> 11)
+                .noCollission()
+                .pushReaction(PushReaction.BLOCK)
+                .sound(SoundType.GLASS)
+                .randomTicks()
         );
     }
 
