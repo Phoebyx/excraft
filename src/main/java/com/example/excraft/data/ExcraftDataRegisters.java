@@ -5,6 +5,8 @@ import com.example.excraft.Excraft;
 import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.blocks.ExcraftPortalBlock;
 import com.example.excraft.dimension.WorldModifierManager;
+import com.example.excraft.dimension.WorldModifierRegister;
+import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import com.example.excraft.items.ExcraftItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -42,8 +44,8 @@ public class ExcraftDataRegisters {
     }
     private static Registry<?>[] registries() {
         Registry<?>[] registries = {
-                WorldModifierManager.WORLD_MODIFIER_REGISTRY,
-                WorldModifierManager.WORLD_MODIFIER_TYPE_REGISTRY
+                WorldModifierRegister.WORLD_MODIFIER_REGISTRY,
+                WorldModifierRegister.WORLD_MODIFIER_TYPE_REGISTRY
         };
         return registries;
     }

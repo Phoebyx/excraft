@@ -23,7 +23,7 @@ public class Config {
     private static final List<String> defaultDisabledWorkstations = List.of(
             "c:player_workstations/crafting_table",
             "c:player_workstations/furnaces",
-            "c:player_workstations/crafting_tables"
+            "c:chests"
     );
 
     private static final List<String> defaultDisabledNoises = List.of(

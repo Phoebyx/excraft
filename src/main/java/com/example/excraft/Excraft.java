@@ -4,9 +4,7 @@ import com.example.excraft.blocks.ExcraftPortalTint;
 import com.example.excraft.data.ExcraftCreativeModeTab;
 import com.example.excraft.data.ExcraftDataRegisters;
 import com.example.excraft.data.ExcraftTimer;
-import com.example.excraft.dimension.ExcraftDimensionManager;
-import com.example.excraft.dimension.DimensionRandomizer;
-import com.example.excraft.dimension.DisabledDimensionBlocks;
+import com.example.excraft.dimension.*;
 //import com.example.excraft.infiniverse.internal.UpdateDimensionsPacket;
 import com.example.excraft.inventory.DurabilityChanges;
 import com.example.excraft.portal.PlaceOriginPortal;
@@ -64,6 +62,7 @@ public class Excraft {
         NeoForge.EVENT_BUS.addListener(DisabledDimensionBlocks::preventDisabledBlocks);
         NeoForge.EVENT_BUS.addListener(DurabilityChanges::recordWhoLeft);
         NeoForge.EVENT_BUS.addListener(DurabilityChanges::damageByPortalReturn);
+        WorldModifierRegister.registerModifierEventListeners();
 
         // Register our mod's ModConfigSpec so that FML can create and load the config file for us
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
@@ -129,6 +128,14 @@ public class Excraft {
             }
         } else {
             ExcraftDimensionManager.createDimension(event.getServer());
+        }
+    }
+
+    @SubscribeEvent
+    public void worldModifierScheduler(ServerTickEvent.Pre event) {
+        WorldModifierManager manager = ExcraftDimensionManager.getCurrentManager();
+        if (manager != null) {
+            manager.worldModifierScheduler();
         }
     }
 
