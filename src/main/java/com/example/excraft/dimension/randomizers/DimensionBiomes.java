@@ -37,24 +37,19 @@ public class DimensionBiomes {
             }
             boolean isInBlacklist = isInConfigList(currentBiome,true);
             boolean isInGuarenteedList = isInConfigList(currentBiome,false);
-            Excraft.LOGGER.info("Checking"+ biome.getSecond().getRegisteredName() + " to " + biome.getSecond());
             if (!isInBlacklist && isInGuarenteedList && !Config.DISABLE_GUARENTEED.get()) {
                 finalList.addLast(biome);
-                Excraft.LOGGER.info("Added "+ biome.getSecond().getRegisteredName() + " to guarenteed list");
             } else if (!isInBlacklist && !isInGuarenteedList) {
                 nonGuarenteedList.addLast(currentBiome);
-                Excraft.LOGGER.info("Added "+ biome.getSecond().getRegisteredName() + " to normal list");
             }
         }
         for (int i = 1; i < Config.BIOMESTOROLL.get() + 1; i++) {
             int randomNumber = Math.abs(DimensionRandomizer.generateRandomFromSalt().nextInt(nonGuarenteedList.size()));
-            Excraft.LOGGER.info("Random Number was selected in biomes to: " + randomNumber);
             Holder<Biome> randomBiome = nonGuarenteedList.remove(randomNumber);
             float[] randomFloatForParameters = new float[7];
             List<Pair<Climate.ParameterPoint, Holder<Biome>>> parameterPointsForThisBiome = biomeList.stream()
                     .filter(pair -> pair.getSecond().equals(randomBiome))
                     .toList();
-            Excraft.LOGGER.info("Rolled "+ randomBiome.getRegisteredName() + " as a biome!");
             holderList.addAll(parameterPointsForThisBiome);
             for (Pair<Climate.ParameterPoint, Holder<Biome>> currentTemperature: holderList) {
                 Pair<Climate.ParameterPoint, Holder<Biome>> newPair = new Pair<>( Climate.parameters(
@@ -77,14 +72,12 @@ public class DimensionBiomes {
         if (isBlackList) {
             for (String biomeCheck: Config.BIOME_BLACKLIST.get()) {
                 if (biome.is(ResourceLocation.bySeparator(biomeCheck,':'))) {
-                    Excraft.LOGGER.info("Comparing From blacklist " + biomeCheck + " with " + biome.getRegisteredName());
                     return true;
                 }
             }
         }  else {
             for (String biomeCheck: Config.GUARENTEED_BIOMES.get()) {
                 if (biome.is(ResourceLocation.bySeparator(biomeCheck, ':'))) {
-                    Excraft.LOGGER.info("Comparing From guarenteed list " + biomeCheck + " with " + biome.getRegisteredName());
                     return true;
                 }
             }

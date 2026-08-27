@@ -51,7 +51,7 @@ public class DurabilityChanges {
             if (entityCapability != null) {
                 doEntityDamage(entityCapability);
             }
-        }
+        } entityUUID = null;
     }
 
     private static boolean entityCheck(EntityLeaveLevelEvent event) {

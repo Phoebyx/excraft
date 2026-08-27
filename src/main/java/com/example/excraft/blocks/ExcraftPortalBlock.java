@@ -10,8 +10,11 @@ import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -51,6 +54,8 @@ public class ExcraftPortalBlock extends Block {
     private static final Supplier<AttachmentType<Integer>> LASTTPTIME = ATTACHMENT_TYPES.register(
             "lasttptime", () -> AttachmentType.builder(() -> 0).serialize(Codec.INT).build()
     );
+    public static final DeferredRegister<SoundEvent> SOUND_EVENTS = DeferredRegister.create(BuiltInRegistries.SOUND_EVENT, "excraft");
+    public static final Holder<SoundEvent> PORTAL_SOUND = SOUND_EVENTS.register("portalsound", SoundEvent::createVariableRangeEvent);
     private static boolean areChunksForced = false;
 
     public ExcraftPortalBlock(Properties properties) {
@@ -110,6 +115,14 @@ public class ExcraftPortalBlock extends Block {
     }
 
     @Override
+    protected void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+        if (level.getBlockState(neighborPos).is(Blocks.WATER)){
+            level.destroyBlock(neighborPos,false);
+        }
+        super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
+    }
+
+    @Override
     public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
         if (isEntityInCooldown(entity,level) || entity instanceof ItemEntity) {
             return;
@@ -126,6 +139,7 @@ public class ExcraftPortalBlock extends Block {
             Excraft.LOGGER.info(String.valueOf(destinationBlock.getY()));
             entity.setData(LASTTPTIME,(int) level.getGameTime());
             entity.teleportTo(serverlevel, entity.getX() + 2, destinationBlock.getY() + 1, entity.getZ(), null, entity.getYRot(), entity.getXRot());
+            entity.invulnerableTime = 180;
         } catch (NullPointerException e) {
             return;
         }
@@ -169,12 +183,12 @@ public class ExcraftPortalBlock extends Block {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(100) == 0) {
+        if (random.nextInt(1000) == 0) {
             level.playLocalSound(
                     (double)pos.getX() + 0.5,
                     (double)pos.getY() + 0.5,
                     (double)pos.getZ() + 0.5,
-                    SoundEvents.PORTAL_AMBIENT,
+                    PORTAL_SOUND.value(),
                     SoundSource.BLOCKS,
                     0.5F,
                     random.nextFloat() * 0.4F + 0.8F,

@@ -1,0 +1,18 @@
+{
+  "portalsound": {
+    "subtitle": "excraft.portalsounds.subtitle",
+    "replace": true,
+    "sounds": [
+      {
+        "name": "excraft:portalsounds",
+        "type": "file",
+        "volume": 1.0,
+        "pitch": 1.0,
+        "weight": 3,
+        "stream": true,
+        "attenuation_distance": 8,
+        "preload": true
+      }
+    ]
+  }
+}

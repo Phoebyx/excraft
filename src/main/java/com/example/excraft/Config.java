@@ -103,6 +103,13 @@ public class Config {
             .comment("How many biomes should it roll between")
             .defineInRange("biomestoroll",3,1, 99999999);
 
+    public static final ModConfigSpec.ConfigValue<Integer> ROLLMODIFIERSRANGEMIN = BUILDER
+            .comment("How many modifiers to roll between. \nMin:")
+            .defineInRange("minmodifierstoroll",0,0, 99999999);
+    public static final ModConfigSpec.ConfigValue<Integer> ROLLMODIFIERSRANGEMAX = BUILDER
+            .comment("\nMax:")
+            .defineInRange("maxmodifierstoroll",5,1,9999999);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {

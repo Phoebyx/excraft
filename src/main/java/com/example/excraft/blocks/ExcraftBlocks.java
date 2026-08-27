@@ -75,6 +75,7 @@ public class ExcraftBlocks {
                 .pushReaction(PushReaction.BLOCK)
                 .sound(SoundType.GLASS)
                 .randomTicks()
+                .forceSolidOn()
         );
     }
 

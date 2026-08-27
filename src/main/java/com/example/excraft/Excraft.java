@@ -6,14 +6,21 @@ import com.example.excraft.data.ExcraftDataRegisters;
 import com.example.excraft.data.ExcraftTimer;
 import com.example.excraft.dimension.*;
 //import com.example.excraft.infiniverse.internal.UpdateDimensionsPacket;
+import com.example.excraft.dimension.worldmodifiers.WorldModifier;
+import com.example.excraft.dimension.worldmodifiers.WorldModifierManager;
+import com.example.excraft.data.WorldModifierRegister;
+import com.example.excraft.dimension.worldmodifiers.WorldModifierManagerSavedData;
 import com.example.excraft.inventory.DurabilityChanges;
 import com.example.excraft.portal.PlaceOriginPortal;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.commoble.infiniverse.internal.DimensionManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -83,7 +90,9 @@ public class Excraft {
 
     @SubscribeEvent
     private void onServerStarted(ServerStartedEvent event) {
-         MinecraftServer server = event.getServer();
+        WorldModifierManagerSavedData.compute(event.getServer().overworld().getDataStorage());
+        ExcraftDimensionManager.setCurrentManagerFromSave(event);
+        MinecraftServer server = event.getServer();
          PlaceOriginPortal.placeBarrenRealmPortal(server);
          if (!ExcraftDimensionManager.doesDimensionExist(server)) {
              createDimension(event.getServer());
@@ -106,7 +115,6 @@ public class Excraft {
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-        // Do something when the server starts
         LOGGER.info("HELLO from server starting");
     }
     @SubscribeEvent
@@ -134,7 +142,7 @@ public class Excraft {
     @SubscribeEvent
     public void worldModifierScheduler(ServerTickEvent.Pre event) {
         WorldModifierManager manager = ExcraftDimensionManager.getCurrentManager();
-        if (manager != null) {
+        if (manager != null && ExcraftDimensionManager.doesDimensionExist(event.getServer())) {
             manager.worldModifierScheduler();
         }
     }
@@ -184,8 +192,17 @@ public class Excraft {
                                     return 1;
                         })
                 )
+                .then(Commands.literal("testsalt")
+                                .executes(context -> {
+                                    RandomSource randomSource = DimensionRandomizer.generateRandomFromSalt();
+                                    context.getSource().sendSuccess(
+                                            () -> Component.literal(String.valueOf(randomSource.nextIntBetweenInclusive(0,5))),
+                                            true
+                                    );
+                                    return 1;
+                                })
+                )
         );
-
     }
 
     private int tpPlayerToExcraft(CommandContext<CommandSourceStack> context) {

@@ -4,9 +4,6 @@ import com.example.excraft.Config;
 import com.example.excraft.Excraft;
 import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.blocks.ExcraftPortalBlock;
-import com.example.excraft.dimension.WorldModifierManager;
-import com.example.excraft.dimension.WorldModifierRegister;
-import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import com.example.excraft.items.ExcraftItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -54,7 +51,9 @@ public class ExcraftDataRegisters {
                  ExcraftBlocks.BLOCKS,
                  ExcraftItems.ITEMS,
                  ExcraftCreativeModeTab.CREATIVE_MODE_TABS,
-                 ExcraftPortalBlock.ATTACHMENT_TYPES
+                 ExcraftPortalBlock.ATTACHMENT_TYPES,
+                 WorldModifierRegister.WORLDMODIFIERREGISTER,
+                 ExcraftPortalBlock.SOUND_EVENTS
         };
         return registers;
     }
@@ -65,6 +64,10 @@ public class ExcraftDataRegisters {
         PackOutput output = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                new WorldModifierTagsProvider(output,lookupProvider,existingFileHelper)
+        );
     }
 
     public static ResourceKey<WorldPreset> resourceKey() {

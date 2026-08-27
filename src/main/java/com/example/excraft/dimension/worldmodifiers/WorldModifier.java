@@ -3,6 +3,7 @@ package com.example.excraft.dimension.worldmodifiers;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.jetbrains.annotations.Nullable;
@@ -17,10 +18,13 @@ public interface WorldModifier {
     int weight = 0;
     int impact = 0;
     List<String> dependentOn = null;
+    TagKey<WorldModifier> WORLD_MODIFIER_TAG_KEY = null;
 
     public int getWeight();
 
     public String getModifierName();
+
+    public ResourceLocation getModifierResourceLocation();
 
     public int getImpact();
 
