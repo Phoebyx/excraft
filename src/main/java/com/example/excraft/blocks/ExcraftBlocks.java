@@ -1,10 +1,13 @@
 package com.example.excraft.blocks;
 
+import com.example.excraft.Excraft;
 import com.example.excraft.items.ExcraftItems;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
@@ -15,13 +18,16 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ExcraftBlocks {
-
-    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks("excraft");
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, Excraft.MODID);
+    public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(Excraft.MODID);
     public static final DeferredBlock<Block> UNBREAKABLE_SANDSTONE = register("unbreakable_sandstone", () -> unbreakableSandstoneDefinition());
     public static final DeferredBlock<StairBlock> UNBREAKABLE_SANDSTONE_STAIRS = register("unbreakable_sandstone_stairs", () -> unbreakableSandstoneStairsDefinition());
     public static final DeferredBlock<SlabBlock> UNBREAKABLE_SANDSTONE_SLABS = register("unbreakable_sandstone_slab", () -> unbreakableSandstoneSlabBlockDefinition());
     public static final DeferredBlock<Block> UNBREAKABLE_CHISELED_SANDSTONE = register("unbreakable_chiseled_sandstone", () -> unbreakableChiseledSandstoneDefinition());
+    public static final DeferredBlock<ExcraftPortalBeaconBlock> PORTAL_BEACON = register("portal_beacon", () -> portalBeaconBlock());
     public static final DeferredBlock<ExcraftPortalBlock> EXCRAFT_PORTAL = BLOCKS.register("excraft_portal", () -> excraftPortalBlockDefinition());
+
+    public static final Supplier<BlockEntityType<ExcraftPortalBeaconBlockEntity>> PORTAL_BEACON_ENTITY = BLOCK_ENTITY_TYPES.register("portal_beacon_entity",() -> portalBeaconBlockEntity());
 
     private static Block unbreakableSandstoneDefinition() {
         return new Block(
@@ -56,8 +62,8 @@ public class ExcraftBlocks {
                         .friction(0.6F)
         );
     }
-    private static Block unbreakableBeaconChiseledSandstoneDefinition() {
-        return new Block(
+    private static ExcraftPortalBeaconBlock portalBeaconBlock() {
+        return new ExcraftPortalBeaconBlock(
                 BlockBehaviour.Properties.ofFullCopy(Blocks.CHISELED_SANDSTONE)
                         .destroyTime(-1)
                         .explosionResistance(3600000)
@@ -66,6 +72,11 @@ public class ExcraftBlocks {
                         .friction(0.6F)
         );
     }
+
+    private static BlockEntityType<ExcraftPortalBeaconBlockEntity> portalBeaconBlockEntity() {
+        return BlockEntityType.Builder.of(ExcraftPortalBeaconBlockEntity::new,ExcraftBlocks.PORTAL_BEACON.get()).build(null);
+    }
+
     private static ExcraftPortalBlock excraftPortalBlockDefinition() {
         return new ExcraftPortalBlock(BlockBehaviour.Properties.of()
                 .destroyTime(-1)

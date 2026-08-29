@@ -1,29 +1,18 @@
 package com.example.excraft.dimension;
 
 import com.example.excraft.Config;
-import com.example.excraft.Excraft;
-import com.example.excraft.blocks.DisabledDimensionBlocksTag;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import org.apache.logging.log4j.EventLogger;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class DisabledDimensionBlocks {
     @SubscribeEvent
@@ -32,9 +21,16 @@ public class DisabledDimensionBlocks {
             blockInDisabledBlockList(event);
         }
     }
+    @SubscribeEvent
+    private static void playerBlockPlaceFix(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getLevel().dimension() != Level.OVERWORLD) {
+            disableBlockPlaceForPlayer(event);
+        }
+    }
 
     private static void blockInDisabledBlockList(BlockEvent.EntityPlaceEvent event) {
         List<String> list = (List<String>) Config.DISABLED_WORKSTATIONS_IN_DIMENSION.get();
+        if (event.getLevel().isClientSide()) {return;}
         for (String current:list) {
             try {
                 TagKey<Block> tag = TagKey.create(Registries.BLOCK, returnNamespaceAndPath(current));
@@ -46,6 +42,26 @@ public class DisabledDimensionBlocks {
             if (event.getPlacedBlock().getBlock().toString().equals("Block{"+ current +"}")) {
                 event.setCanceled(true);
                 return;
+            }
+        }
+    }
+    private static void disableBlockPlaceForPlayer(PlayerInteractEvent.RightClickBlock event) {
+        List<String> list = (List<String>) Config.DISABLED_WORKSTATIONS_IN_DIMENSION.get();
+        if (!event.getLevel().isClientSide()) {return;}
+        for (String current:list) {
+            if (event.getItemStack().getItem() instanceof BlockItem blockItem) {
+                try {
+                    TagKey<Block> tag = TagKey.create(Registries.BLOCK, returnNamespaceAndPath(current));
+                    if (blockItem.getBlock().defaultBlockState().is(tag)) {
+                        event.setCanceled(true);
+                        return;
+                    }
+                } catch (Exception ignored) {
+                }
+                if (blockItem.getBlock().toString().equals("Block{" + current + "}")) {
+                    event.setCanceled(true);
+                    return;
+                }
             }
         }
     }

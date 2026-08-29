@@ -76,6 +76,7 @@ public class ExcraftPortalBlock extends Block {
     public BlockState getStateForColor(int color) {
         return this.defaultBlockState().setValue(this.getAgeProperty(), Integer.valueOf(color));
     }
+
     public BlockState updateStateForColor(int color, BlockState state) {
         return state.setValue(this.getAgeProperty(), Integer.valueOf(color));
     }

@@ -53,7 +53,8 @@ public class ExcraftDataRegisters {
                  ExcraftCreativeModeTab.CREATIVE_MODE_TABS,
                  ExcraftPortalBlock.ATTACHMENT_TYPES,
                  WorldModifierRegister.WORLDMODIFIERREGISTER,
-                 ExcraftPortalBlock.SOUND_EVENTS
+                 ExcraftPortalBlock.SOUND_EVENTS,
+                 ExcraftBlocks.BLOCK_ENTITY_TYPES
         };
         return registers;
     }

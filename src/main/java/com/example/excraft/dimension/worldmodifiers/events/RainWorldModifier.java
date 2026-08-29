@@ -1,13 +1,9 @@
 package com.example.excraft.dimension.worldmodifiers.events;
 
-import com.example.excraft.Excraft;
-import com.example.excraft.data.WorldModifierRegister;
 import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -15,7 +11,6 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 public class RainWorldModifier extends EventWorldModifierType implements WorldModifier {
     private static final String modifierName = "Rain World";
@@ -78,7 +73,7 @@ public class RainWorldModifier extends EventWorldModifierType implements WorldMo
     }
 
     @SubscribeEvent
-    public static void playerTick(PlayerTickEvent.Pre event) {
+    public static void eventListener(PlayerTickEvent.Pre event) {
         if (active && event.getEntity().level().canSeeSky(event.getEntity().blockPosition()) && event.getEntity().level().dimension() == levelResourceKey && event.getEntity().canDrownInFluidType(Fluids.WATER.getFluidType())) {
             event.getEntity().setAirSupply(event.getEntity().getAirSupply() - 7);
         }

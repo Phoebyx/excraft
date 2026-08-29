@@ -1,6 +1,5 @@
 package com.example.excraft.dimension.worldmodifiers.entity;
 
-import com.example.excraft.dimension.DimensionRandomizer;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import net.minecraft.resources.ResourceKey;
@@ -28,7 +27,7 @@ public class SizeMattersModifier extends EntityWorldModifierType implements Worl
     private static boolean impactDirection = false;
     private static int affectedEntity = 0; //0 - Players Only //1 - Other Entities Only // 2 - Both
     private static AttributeModifier sizeMattersSmall = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","sizematterssmall"),-0.5F,AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
-    private static AttributeModifier sizeMattersBig = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","sizemattersbig"),2.0F,AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    private static AttributeModifier sizeMattersBig = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","sizemattersbig"),1.0F,AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
     public SizeMattersModifier() {
         rollImpact();
@@ -40,8 +39,8 @@ public class SizeMattersModifier extends EntityWorldModifierType implements Worl
     }
 
     private static void rollImpact() {
-        impactDirection = DimensionRandomizer.generateRandomFromSalt().nextBoolean();
-        affectedEntity = DimensionRandomizer.generateRandomFromSalt().nextIntBetweenInclusive(0,2);
+        impactDirection = ExcraftDimensionManager.getCurrentManagerRandomSource().nextBoolean();
+        affectedEntity = ExcraftDimensionManager.getCurrentManagerRandomSource().nextIntBetweenInclusive(0,2);
     }
 
     @Override
@@ -79,11 +78,11 @@ public class SizeMattersModifier extends EntityWorldModifierType implements Worl
     }
 
     @SubscribeEvent
-    public static void entityJoin(EntityJoinLevelEvent event) {
+    public static void eventListener(EntityJoinLevelEvent event) {
         LivingEntity entity;
         if (event.getLevel().dimension() == ExcraftDimensionManager.EXCRAFT_LEVEL && active && event.getEntity() instanceof LivingEntity) {
             entity = (LivingEntity) event.getEntity();
-            if (whoToModify(entity)) {
+            if (whoToModify(event.getEntity())) {
                 attributeToModify(entity);
             }
         } else if ((event.getLevel().dimension() != ExcraftDimensionManager.EXCRAFT_LEVEL || !active) && event.getEntity() instanceof Player) {
@@ -110,6 +109,6 @@ public class SizeMattersModifier extends EntityWorldModifierType implements Worl
     private static void attributeToModify(LivingEntity entity) {
         AttributeModifier modifier;
         if (impactDirection) {modifier = sizeMattersSmall;} else {modifier = sizeMattersBig;}
-        entity.getAttribute(Attributes.SCALE).addOrUpdateTransientModifier(modifier);
+        entity.getAttribute(Attributes.SCALE).addOrReplacePermanentModifier(modifier);
     }
 }

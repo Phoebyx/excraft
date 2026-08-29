@@ -18,8 +18,7 @@ public class ExcraftCreativeModeTab {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, Excraft.MODID);
 
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXCRAFT_TAB = CREATIVE_MODE_TABS.register("excraft_tab", () -> net.minecraft.world.item.CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.excraft")) //The language key for the title of your CreativeModeTab
-            .withTabsBefore(CreativeModeTabs.COMBAT)
+            .title(Component.translatable("itemGroup.excraft"))
             .icon(() -> new ItemStack(ExcraftBlocks.UNBREAKABLE_CHISELED_SANDSTONE.get()))
             .displayItems((parameters, output) -> {
                 output.accept(ExcraftBlocks.UNBREAKABLE_SANDSTONE.get());
@@ -27,6 +26,7 @@ public class ExcraftCreativeModeTab {
                 output.accept(ExcraftBlocks.UNBREAKABLE_SANDSTONE_SLABS.get());
                 output.accept(ExcraftBlocks.UNBREAKABLE_CHISELED_SANDSTONE.get());
                 output.accept(ExcraftItems.CACTUS_AXE.get());
+                output.accept(ExcraftBlocks.PORTAL_BEACON.get());
                 // Add the example item to the tab. For your own tabs, this method is preferred over the event
             }).build()
     );

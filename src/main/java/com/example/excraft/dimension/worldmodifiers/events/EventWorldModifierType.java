@@ -16,6 +16,7 @@ public abstract class EventWorldModifierType implements WorldModifierType {
     public String getModifierName() {
         return this.modifierType;
     }
+
     public void setCurrentTime(MinecraftServer server){
         this.timeInSeconds = ExcraftTimer.getCurrentTimer(server);
     }

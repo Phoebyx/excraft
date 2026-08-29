@@ -1,21 +1,17 @@
 package com.example.excraft.dimension.worldmodifiers.entity;
 
-import com.example.excraft.Excraft;
-import com.example.excraft.dimension.DimensionRandomizer;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -30,8 +26,8 @@ public class AttributeGravityModifier extends EntityWorldModifierType implements
     private static boolean impactDirection = false;
     private static AttributeModifier modifierPositive = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","gravitynegative"),-0.8F,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     private static AttributeModifier modifierNegative = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","gravitypositive"),0.5F,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static AttributeModifier modifierNegativeFall = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","gravitypositivefall"),-0.9F,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
-    private static AttributeModifier modifierPositiveFall = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","gravitynegativefall"),3.0F,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static AttributeModifier modifierNegativeFall = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","gravitypositivefall"),-0.5F,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    private static AttributeModifier modifierPositiveFall = new AttributeModifier(ResourceLocation.fromNamespaceAndPath("excraft","gravitynegativefall"),1.5F,AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
 
     public AttributeGravityModifier() {
         rollImpact();
@@ -77,7 +73,7 @@ public class AttributeGravityModifier extends EntityWorldModifierType implements
     }
 
     @SubscribeEvent
-    public static void entityJoin(EntityJoinLevelEvent event) {
+    public static void eventListener(EntityJoinLevelEvent event) {
         LivingEntity entity;
         if (event.getLevel().dimension() == ExcraftDimensionManager.EXCRAFT_LEVEL && active && event.getEntity() instanceof LivingEntity) {
             entity = (LivingEntity) event.getEntity();
@@ -92,7 +88,8 @@ public class AttributeGravityModifier extends EntityWorldModifierType implements
         AttributeModifier modifier;
         AttributeModifier modifierFall;
         AttributeModifier modifierFallMultiplier;
-        if (impactDirection) {modifier = modifierPositive; modifierFall = modifierPositiveFall; modifierFallMultiplier = modifierNegativeFall;} else {modifier = modifierNegative; modifierFall = modifierNegativeFall; modifierFallMultiplier = modifierPositiveFall;}
+        if (impactDirection) {modifier = modifierPositive; modifierFall = modifierPositiveFall; modifierFallMultiplier = modifierNegativeFall;}
+        else {modifier = modifierNegative; modifierFall = modifierNegativeFall; modifierFallMultiplier = modifierPositiveFall;}
         entity.getAttribute(Attributes.GRAVITY).removeModifier(modifier);
         entity.getAttribute(Attributes.SAFE_FALL_DISTANCE).removeModifier(modifierFall);
         entity.getAttribute(Attributes.FALL_DAMAGE_MULTIPLIER).removeModifier(modifierFallMultiplier);
@@ -102,12 +99,13 @@ public class AttributeGravityModifier extends EntityWorldModifierType implements
         AttributeModifier modifier;
         AttributeModifier modifierFall;
         AttributeModifier modifierFallMultiplier;
-        if (impactDirection) {modifier = modifierPositive; modifierFall = modifierPositiveFall; modifierFallMultiplier = modifierNegativeFall;} else {modifier = modifierNegative; modifierFall = modifierNegativeFall; modifierFallMultiplier = modifierPositiveFall;}
-        entity.getAttribute(Attributes.GRAVITY).addOrUpdateTransientModifier(modifier);
-        entity.getAttribute(Attributes.SAFE_FALL_DISTANCE).addOrUpdateTransientModifier(modifierFall);
-        entity.getAttribute(Attributes.FALL_DAMAGE_MULTIPLIER).addOrUpdateTransientModifier(modifierFallMultiplier);
+        if (impactDirection) {modifier = modifierPositive; modifierFall = modifierPositiveFall; modifierFallMultiplier = modifierNegativeFall;}
+        else {modifier = modifierNegative; modifierFall = modifierNegativeFall; modifierFallMultiplier = modifierPositiveFall;}
+        entity.getAttribute(Attributes.GRAVITY).addOrReplacePermanentModifier(modifier);
+        entity.getAttribute(Attributes.SAFE_FALL_DISTANCE).addOrReplacePermanentModifier(modifierFall);
+        entity.getAttribute(Attributes.FALL_DAMAGE_MULTIPLIER).addOrReplacePermanentModifier(modifierFallMultiplier);
     }
     private static void rollImpact() {
-        impactDirection = DimensionRandomizer.generateRandomFromSalt().nextBoolean();
+        impactDirection = ExcraftDimensionManager.getCurrentManagerRandomSource().nextBoolean();
     }
 }

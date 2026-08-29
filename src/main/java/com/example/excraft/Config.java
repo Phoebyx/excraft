@@ -29,7 +29,8 @@ public class Config {
     private static final List<String> defaultDisabledNoises = List.of(
             "minecraft:nether",
             "minecraft:end",
-            "excraft:barrenrealm"
+            "excraft:barrenrealm",
+            "minecraft:large_biomes"
     );
 
     private static final List<String> defaultDisabledBiomes = List.of(
@@ -62,6 +63,10 @@ public class Config {
             "minecraft:deep_dark",
             "minecraft:deep_ocean"
             );
+    private static final List<String> blacklistedModifiers = List.of(
+            "excraft:infiniteenderpearl",
+            "excraft:environment_light"
+    );
 
     public static final ModConfigSpec.ConfigValue<Boolean> REPLACE_WORLD_SCREEN = BUILDER
             .comment("Make Barren Realms the default world preset")
@@ -106,9 +111,14 @@ public class Config {
     public static final ModConfigSpec.ConfigValue<Integer> ROLLMODIFIERSRANGEMIN = BUILDER
             .comment("How many modifiers to roll between. \nMin:")
             .defineInRange("minmodifierstoroll",0,0, 99999999);
+
     public static final ModConfigSpec.ConfigValue<Integer> ROLLMODIFIERSRANGEMAX = BUILDER
             .comment("\nMax:")
             .defineInRange("maxmodifierstoroll",5,1,9999999);
+
+    public static final ModConfigSpec.ConfigValue<List<? extends String>> MODIFIERBLACKLIST = BUILDER
+            .comment("Stop these modifiers from rolling")
+            .defineListAllowEmpty("modifierblacklist", blacklistedModifiers, () -> "", Config::validateName);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 

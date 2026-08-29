@@ -1,16 +1,16 @@
 package com.example.excraft.dimension.randomizers;
 
-import com.example.excraft.dimension.DimensionRandomizer;
-import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.NoiseData;
+import com.example.excraft.Excraft;
+import com.example.excraft.dimension.ExcraftDimensionManager;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.WorldGenWorldModifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.NoiseRouter;
-import net.minecraft.world.level.levelgen.synth.NormalNoise;
+
+import java.util.List;
+import java.util.Objects;
 
 public class NoiseRouterRandomizer {
     private NoiseRouter currentNoiseRouter;
@@ -65,18 +65,32 @@ public class NoiseRouterRandomizer {
                 modifyFunction(depth),
                 modifyFunction(ridges),
                 modifyFunction(initialDensityWithoutJaggedness),
-                modifyFunction(finalDensity),
+                modifyFinalDensityFunction(finalDensity),
                 modifyFunction(veinToggle),
                 modifyFunction(veinRidged),
                 modifyFunction(veinGap)
         );
     }
     private DensityFunction modifyFunction(DensityFunction function)  {
-        /* double d1 = 1/DimensionRandomizer.generateRandomFromSalt().nextDouble();
-        double d2 = 1/DimensionRandomizer.generateRandomFromSalt().nextDouble();
-        return DensityFunctions.mul(DensityFunctions.yClampedGradient(-64,384, d1, d2),function);*/
-        double d2 = DimensionRandomizer.generateRandomFromSalt().nextDouble();
-        NormalNoise noise = NormalNoise.create(DimensionRandomizer.generateRandomFromSalt(),-6,1,1,1);
         return function;
     }
+
+    private DensityFunction modifyFinalDensityFunction(DensityFunction function)  {
+        DensityFunction modified = applySelectWorldGenModifiers(function);
+        return modified;
+    }
+
+    private static DensityFunction applySelectWorldGenModifiers(DensityFunction function) {
+        List<WorldGenWorldModifier> listOfModifiers = ExcraftDimensionManager.getCurrentManager().getWorldGenModifiers();
+        for (int i = 0; i < listOfModifiers.size(); i++) {
+            int randomFunctionOrder = ExcraftDimensionManager.getCurrentManagerRandomSource().nextIntBetweenInclusive(1,listOfModifiers.size()) - 1;
+            WorldGenWorldModifier worldGenModifier = listOfModifiers.remove(randomFunctionOrder);
+            if (Objects.equals(worldGenModifier.getType(), "densityfunction")) {
+                worldGenModifier.modifyWorld(function);
+            }
+        }
+        return function;
+    }
+
+
 }

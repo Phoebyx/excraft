@@ -8,17 +8,15 @@ import com.example.excraft.blocks.ExcraftPortalBlock;
 import com.example.excraft.dimension.worldmodifiers.WorldModifierManager;
 import com.example.excraft.dimension.worldmodifiers.WorldModifierManagerSavedData;
 import net.commoble.infiniverse.api.InfiniverseAPI;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
-import net.neoforged.neoforge.event.server.ServerStartingEvent;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -43,8 +41,15 @@ public class ExcraftDimensionManager {
         ExcraftPortalBlock.createPortalAndReturnLocation(server.getLevel(EXCRAFT_LEVEL));
         server.saveEverything(false,true,true);
     }
+    public static RandomSource getCurrentManagerRandomSource() {
+        if (currentManager == null) {
+            return DimensionRandomizer.generateRandomFromSalt();
+        }
+        return currentManager.getRandomSource();
+    }
+
     private static int setModifierSlots() {
-        if (Config.ROLLMODIFIERSRANGEMIN.get() == Config.ROLLMODIFIERSRANGEMAX.get()) {
+        if (Config.ROLLMODIFIERSRANGEMIN.get().equals(Config.ROLLMODIFIERSRANGEMAX.get())) {
             return Config.ROLLMODIFIERSRANGEMIN.get();
         } else {
            return DimensionRandomizer.generateRandomFromSalt().nextInt(Config.ROLLMODIFIERSRANGEMIN.get(),Config.ROLLMODIFIERSRANGEMAX.get());

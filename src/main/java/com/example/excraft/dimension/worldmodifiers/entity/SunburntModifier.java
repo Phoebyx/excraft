@@ -1,21 +1,15 @@
 package com.example.excraft.dimension.worldmodifiers.entity;
 
-import com.example.excraft.Excraft;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.EntityEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,7 +58,7 @@ public class SunburntModifier extends EntityWorldModifierType implements WorldMo
     }
 
     @SubscribeEvent
-    public static void playerTick(PlayerTickEvent.Post event) {
+    public static void eventListener(PlayerTickEvent.Post event) {
         Entity currentEntity = event.getEntity();
         if (burnCheck(event,currentEntity)) {
             currentEntity.igniteForSeconds(3);

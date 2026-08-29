@@ -18,6 +18,11 @@ public class ExcraftTimer {
         return timerInTicks() - currentTimePassed;
     }
 
+    public static long getCurrentTimer(long gameTime) {
+        long currentTimePassed = gameTime % timerInTicks();
+        return timerInTicks() - currentTimePassed;
+    }
+
     public static String getCurrentTimerInHumanReadableForm(MinecraftServer server) {
         if (server.getLevel(ExcraftDimensionManager.EXCRAFT_LEVEL) == null) {
             return "The dimension doesn't exist yet";
@@ -31,7 +36,7 @@ public class ExcraftTimer {
     }
 
     public static long timerInTicks() {
-        return (long) (Config.WORLD_CYCLE.get() * 72000);
+        return Config.WORLD_CYCLE.get() == 0 ? Integer.MAX_VALUE : (long) (Config.WORLD_CYCLE.get() * 72000);
     }
     public static void updateLastColorIndexSelected(int colorIndexSelected) {
         lastColorIndexSelected = colorIndexSelected;
@@ -43,6 +48,14 @@ public class ExcraftTimer {
         int colorIndexSelected = Math.clamp( (int) currentTimerColourNoClamp, 0 , coloursSize);
         return colorIndexSelected;
     }
+
+    public static int intPortalBlockColor(long gameTime) {
+        int coloursSize = ExcraftPortalTint.getCurrentColour().size();
+        float currentTimerColourNoClamp = (float)  coloursSize * ExcraftTimer.getCurrentTimer(gameTime) / ExcraftTimer.timerInTicks();
+        int colorIndexSelected = Math.clamp( (int) currentTimerColourNoClamp, 0 , coloursSize);
+        return colorIndexSelected;
+    }
+
     public static boolean isLastColorIndexSelectedSameAsLast(int colorIndexSelected, ServerTickEvent event) {
         boolean portalCheckCycleTime = event.getServer().overworld().getGameTime() % Config.PORTAL_COLOR_TICK_CYCLE.get() == 1;
         return lastColorIndexSelected != colorIndexSelected && portalCheckCycleTime;

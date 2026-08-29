@@ -64,7 +64,7 @@ public class AttributeStepHeightModifier extends EntityWorldModifierType impleme
     }
 
     @SubscribeEvent
-    public static void entityJoin(EntityJoinLevelEvent event) {
+    public static void eventListener(EntityJoinLevelEvent event) {
         LivingEntity entity;
         if (event.getLevel().dimension() == ExcraftDimensionManager.EXCRAFT_LEVEL && active && event.getEntity() instanceof LivingEntity) {
             entity = (LivingEntity) event.getEntity();
@@ -80,6 +80,6 @@ public class AttributeStepHeightModifier extends EntityWorldModifierType impleme
     }
 
     private static void attributeToModify(LivingEntity entity) {
-        entity.getAttribute(Attributes.STEP_HEIGHT).addOrUpdateTransientModifier(stepHeight);
+        entity.getAttribute(Attributes.STEP_HEIGHT).addOrReplacePermanentModifier(stepHeight);
     }
 }

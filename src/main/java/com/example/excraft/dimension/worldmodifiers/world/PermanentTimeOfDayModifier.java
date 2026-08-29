@@ -64,7 +64,7 @@ public class PermanentTimeOfDayModifier extends WorldWorldModifierType implement
     }
 
     private void rollTime() {
-        int randomInt = DimensionRandomizer.generateRandomFromSalt().nextIntBetweenInclusive(0,3);
+        int randomInt = ExcraftDimensionManager.getCurrentManagerRandomSource().nextIntBetweenInclusive(0,3);
         switch (randomInt) {
             case (0): {
                 time = 6000;
