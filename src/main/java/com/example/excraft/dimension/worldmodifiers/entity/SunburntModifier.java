@@ -17,7 +17,7 @@ import java.util.List;
 
 public class SunburntModifier extends EntityWorldModifierType implements WorldModifier {
     private static final String modifierName = "Sunburnt";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","sunburnt");
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = -4;
     private static ResourceKey<Level> levelResourceKey;
@@ -33,7 +33,7 @@ public class SunburntModifier extends EntityWorldModifierType implements WorldMo
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

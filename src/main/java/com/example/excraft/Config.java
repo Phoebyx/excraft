@@ -120,6 +120,10 @@ public class Config {
             .comment("Stop these modifiers from rolling")
             .defineListAllowEmpty("modifierblacklist", blacklistedModifiers, () -> "", Config::validateName);
 
+    public static final ModConfigSpec.ConfigValue<Integer> BORDERRADIUS = BUILDER
+            .comment("Default border size")
+            .defineInRange("borderradius",2000,20,9999999);
+
     static final ModConfigSpec SPEC = BUILDER.build();
 
     private static boolean validateItemName(final Object obj) {

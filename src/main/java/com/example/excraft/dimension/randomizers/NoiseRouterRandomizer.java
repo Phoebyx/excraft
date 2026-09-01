@@ -3,6 +3,7 @@ package com.example.excraft.dimension.randomizers;
 import com.example.excraft.Excraft;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.dimension.worldmodifiers.world.worldgen.WorldGenWorldModifier;
+import com.example.excraft.worldgen.densityfunctions.WorldEndDensityFunction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -72,11 +73,13 @@ public class NoiseRouterRandomizer {
         );
     }
     private DensityFunction modifyFunction(DensityFunction function)  {
+        //function = DensityFunctions.rangeChoice(new WorldEndDensityFunction(),0,100000,function,DensityFunctions.constant(-100));
         return function;
     }
 
     private DensityFunction modifyFinalDensityFunction(DensityFunction function)  {
         DensityFunction modified = applySelectWorldGenModifiers(function);
+        //modified = DensityFunctions.rangeChoice(new WorldEndDensityFunction(),0,100000,modified,DensityFunctions.constant(-100));
         return modified;
     }
 
@@ -86,7 +89,7 @@ public class NoiseRouterRandomizer {
             int randomFunctionOrder = ExcraftDimensionManager.getCurrentManagerRandomSource().nextIntBetweenInclusive(1,listOfModifiers.size()) - 1;
             WorldGenWorldModifier worldGenModifier = listOfModifiers.remove(randomFunctionOrder);
             if (Objects.equals(worldGenModifier.getType(), "densityfunction")) {
-                worldGenModifier.modifyWorld(function);
+                function = worldGenModifier.modifyWorld(function);
             }
         }
         return function;

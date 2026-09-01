@@ -2,18 +2,15 @@ package com.example.excraft.dimension.randomizers;
 
 import com.example.excraft.Excraft;
 import com.example.excraft.dimension.ExcraftDimensionManager;
-import com.example.excraft.dimension.worldmodifiers.world.WorldWorldModifierType;
-import com.example.excraft.dimension.worldmodifiers.world.worldgen.NoiseGeneratorSettingsWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.noisesettings.NoiseGeneratorSettingsWorldModifier;
 import com.example.excraft.dimension.worldmodifiers.world.worldgen.WorldGenWorldModifier;
 import net.minecraft.core.Holder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraft.world.level.levelgen.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 public class NoiseGeneratorSettingsRandomizer {
     private static int seaLevelModifier;
@@ -30,7 +27,7 @@ public class NoiseGeneratorSettingsRandomizer {
                 defaultBlockModifier == null ? noiseToModify.defaultBlock():defaultBlockModifier,
                 defaultLiquidModifier == null ? noiseToModify.defaultBlock():defaultLiquidModifier,
                 routerRandomizer.makeNoiseRouter(),
-                noiseToModify.surfaceRule(),
+                surfaceRule(noiseToModify),
                 noiseToModify.spawnTarget(),
                 noiseToModify.seaLevel() + seaLevelModifier,
                 false,
@@ -54,5 +51,8 @@ public class NoiseGeneratorSettingsRandomizer {
                 defaultLiquidModifier = setNoiseGenParameter.defaultFluid();
             }
         }
+    }
+    private static SurfaceRules.RuleSource surfaceRule(NoiseGeneratorSettings noiseToModify) {
+        return noiseToModify.surfaceRule();
     }
 }

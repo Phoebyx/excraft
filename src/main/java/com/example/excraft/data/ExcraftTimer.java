@@ -1,14 +1,11 @@
 package com.example.excraft.data;
 
 import com.example.excraft.Config;
-import com.example.excraft.blocks.ExcraftPortalTint;
+import com.example.excraft.blocks.portal.ExcraftPortalTint;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
-import org.apache.logging.log4j.core.jmx.Server;
-
-import java.util.logging.Level;
 
 public class ExcraftTimer {
     private static int lastColorIndexSelected = -1;

@@ -1,28 +1,30 @@
-package com.example.excraft.blocks;
+package com.example.excraft.blocks.beacon;
 
-import com.example.excraft.Excraft;
+import com.example.excraft.blocks.portal.ExcraftPortalTint;
 import com.example.excraft.data.ExcraftTimer;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BeaconRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BeaconBlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.extensions.IBlockEntityRendererExtension;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.ClientHooks;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class ExcraftPortalBeaconEntityRenderer implements BlockEntityRenderer<ExcraftPortalBeaconBlockEntity> {
-
     public ExcraftPortalBeaconEntityRenderer(BlockEntityRendererProvider.Context context) {
+
     }
 
     @Override
@@ -37,8 +39,8 @@ public class ExcraftPortalBeaconEntityRenderer implements BlockEntityRenderer<Ex
                 0,
                 512,
                 beaconColour(beaconEntity),
-                0.2F,
-                0.25F
+                sizeOverDistance(beaconEntity),
+                sizeOverDistance(beaconEntity)
         );
     }
 
@@ -53,6 +55,14 @@ public class ExcraftPortalBeaconEntityRenderer implements BlockEntityRenderer<Ex
         return Vec3.atCenterOf(blockEntity.getBlockPos()).multiply((double)1.0F, (double)0.0F, (double)1.0F).closerThan(cameraPos.multiply((double)1.0F, (double)0.0F, (double)1.0F), (double)this.getViewDistance());
     }
 
+    public float sizeOverDistance(ExcraftPortalBeaconBlockEntity blockEntity) {
+        Minecraft minecraft = Minecraft.getInstance();
+        Vec3 cameraPos = minecraft.gameRenderer.getMainCamera().getPosition();
+        BlockPos pos = blockEntity.getBlockPos();
+        float distance = (float) Math.pow(cameraPos.distanceTo(pos.getCenter()) * 0.003F,2);
+        return Math.max(distance, 0.2F);
+    }
+
     @Override
     public boolean shouldRenderOffScreen(ExcraftPortalBeaconBlockEntity blockEntity) {
         return true;
@@ -62,6 +72,7 @@ public class ExcraftPortalBeaconEntityRenderer implements BlockEntityRenderer<Ex
     public AABB getRenderBoundingBox(ExcraftPortalBeaconBlockEntity blockEntity) {
         return AABB.INFINITE;
     }
+
     @Override
     public int getViewDistance() {
         return Integer.MAX_VALUE;

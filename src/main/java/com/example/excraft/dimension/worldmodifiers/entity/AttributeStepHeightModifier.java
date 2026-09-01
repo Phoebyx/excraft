@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class AttributeStepHeightModifier extends EntityWorldModifierType implements WorldModifier {
-    private static final String modifierName = "Step Height";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","stepheight");
+    public static final String modifierName = "Step Height";
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = 4;
     private static ResourceKey<Level> levelResourceKey;
@@ -36,7 +36,7 @@ public class AttributeStepHeightModifier extends EntityWorldModifierType impleme
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

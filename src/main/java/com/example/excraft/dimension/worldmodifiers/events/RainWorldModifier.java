@@ -14,11 +14,10 @@ import java.util.List;
 
 public class RainWorldModifier extends EventWorldModifierType implements WorldModifier {
     private static final String modifierName = "Rain World";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","rainworld");
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = -4;
     private static boolean active = false;
-    private final Boolean cycle = true;
     private static ResourceKey<Level> levelResourceKey;
     private float currentRainLevel = 0;
 
@@ -33,7 +32,7 @@ public class RainWorldModifier extends EventWorldModifierType implements WorldMo
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

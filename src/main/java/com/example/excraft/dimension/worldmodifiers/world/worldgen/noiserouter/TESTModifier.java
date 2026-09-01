@@ -1,9 +1,8 @@
-package com.example.excraft.dimension.worldmodifiers.world.worldgen;
+package com.example.excraft.dimension.worldmodifiers.world.worldgen.noiserouter;
 
-import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import com.example.excraft.dimension.worldmodifiers.world.WorldWorldModifierType;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.WorldGenWorldModifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.DensityFunction;
@@ -12,11 +11,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PrettyFlatWorldModifier extends WorldWorldModifierType implements WorldGenWorldModifier {
-    private static final String modifierName = "Pretty Flat";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","prettyflat");
+public class TESTModifier extends WorldWorldModifierType implements WorldGenWorldModifier {
+    private static final String modifierName = "Zero";
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
-    private int impact = 0;
+    private int impact = -2;
     private static ResourceKey<Level> levelResourceKey;
     private static boolean active = false;
     private static String type = "densityfunction";
@@ -36,7 +35,7 @@ public class PrettyFlatWorldModifier extends WorldWorldModifierType implements W
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 
@@ -62,7 +61,6 @@ public class PrettyFlatWorldModifier extends WorldWorldModifierType implements W
 
     @Override
     public DensityFunction modifyWorld(DensityFunction toModify) {
-        //return DensityFunctions.mul(toModify.clamp(-0.1,0.1),DensityFunctions.constant(0.001));
-        return DensityFunctions.yClampedGradient(-64,320,-1,1);
+        return DensityFunctions.mul(toModify, DensityFunctions.constant(0));
     }
 }

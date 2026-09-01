@@ -14,7 +14,7 @@ import java.util.List;
 
 public class EnvironmentLightLevelModifier extends WorldWorldModifierType implements WorldModifier {
     private static final String modifierName = "Environment Light";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","environment_light");
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private int impact = 0;
     private static ResourceKey<Level> levelResourceKey;
@@ -41,7 +41,7 @@ public class EnvironmentLightLevelModifier extends WorldWorldModifierType implem
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

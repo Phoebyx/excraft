@@ -18,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class SizeMattersModifier extends EntityWorldModifierType implements WorldModifier {
-    private static final String modifierName = "Size Matters";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","sizematters");
+    public static final String modifierName = "Size Matters";
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = 4;
     private static ResourceKey<Level> levelResourceKey;
@@ -49,7 +49,7 @@ public class SizeMattersModifier extends EntityWorldModifierType implements Worl
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

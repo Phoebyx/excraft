@@ -20,7 +20,7 @@ import java.util.List;
 
 public class PotionEffectModifier extends EntityWorldModifierType implements WorldModifier {
     private final String modifierName;
-    private final ResourceLocation modifierResourceLocation;
+    private final String modifierResourceLocation;
     private final int weight = 1;
     private final int impact;
     private boolean active;
@@ -33,7 +33,7 @@ public class PotionEffectModifier extends EntityWorldModifierType implements Wor
         this.effect = mobEffect;
         this.level = level;
         this.active = false;
-        this.modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft",modifierName.toLowerCase().replaceAll(" ","_"));
+        this.modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     }
 
     @Override
@@ -46,7 +46,7 @@ public class PotionEffectModifier extends EntityWorldModifierType implements Wor
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

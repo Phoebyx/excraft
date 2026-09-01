@@ -15,8 +15,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class MartidomEntityModifier extends EntityWorldModifierType implements WorldModifier {
-    private static final String modifierName = "Martidom";
+public class PotionMartidomEntityModifier extends EntityWorldModifierType implements WorldModifier {
+    private static final String modifierName = "Potion Martidom";
     public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = -5;

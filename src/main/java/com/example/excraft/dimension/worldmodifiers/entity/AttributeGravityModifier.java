@@ -17,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public class AttributeGravityModifier extends EntityWorldModifierType implements WorldModifier {
-    private static final String modifierName = "Gravity";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","gravity");
+    public static final String modifierName = "Gravity";
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = 5;
     private static ResourceKey<Level> levelResourceKey;
@@ -38,13 +38,13 @@ public class AttributeGravityModifier extends EntityWorldModifierType implements
         return weight;
     }
 
-    @Override
+
     public String getModifierName() {
         return modifierName;
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

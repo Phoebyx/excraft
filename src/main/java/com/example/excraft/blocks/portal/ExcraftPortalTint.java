@@ -1,5 +1,6 @@
-package com.example.excraft.blocks;
+package com.example.excraft.blocks.portal;
 
+import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;

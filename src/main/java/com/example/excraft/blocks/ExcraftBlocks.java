@@ -1,12 +1,16 @@
 package com.example.excraft.blocks;
 
 import com.example.excraft.Excraft;
+import com.example.excraft.blocks.beacon.ExcraftPortalBeaconBlock;
+import com.example.excraft.blocks.beacon.ExcraftPortalBeaconBlockEntity;
+import com.example.excraft.blocks.portal.ExcraftPortalBlock;
 import com.example.excraft.items.ExcraftItems;
+import net.minecraft.commands.arguments.blocks.BlockStateArgument;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.PushReaction;
@@ -36,6 +40,7 @@ public class ExcraftBlocks {
                         .explosionResistance(3600000)
                         .sound(SoundType.STONE)
                         .friction(0.6F)
+                        .isValidSpawn((state,level,pos, entityType) -> false)
         );
     }
     private static StairBlock unbreakableSandstoneStairsDefinition() {
@@ -44,6 +49,8 @@ public class ExcraftBlocks {
                 Block.Properties.ofFullCopy(Blocks.SANDSTONE_STAIRS)
                         .destroyTime(-1)
                         .explosionResistance(3600000)
+                        .isValidSpawn((state,level,pos, entityType) -> false)
+
         );
     }
     private static SlabBlock unbreakableSandstoneSlabBlockDefinition() {
@@ -51,6 +58,8 @@ public class ExcraftBlocks {
                 Block.Properties.ofFullCopy(Blocks.SANDSTONE_SLAB)
                         .destroyTime(-1)
                         .explosionResistance(3600000)
+                        .isValidSpawn((state,level,pos, entityType) -> false)
+
         );
     }
     private static Block unbreakableChiseledSandstoneDefinition() {
@@ -60,6 +69,8 @@ public class ExcraftBlocks {
                         .explosionResistance(3600000)
                         .sound(SoundType.STONE)
                         .friction(0.6F)
+                        .isValidSpawn((state,level,pos, entityType) -> false)
+
         );
     }
     private static ExcraftPortalBeaconBlock portalBeaconBlock() {
@@ -70,6 +81,7 @@ public class ExcraftBlocks {
                         .sound(SoundType.STONE)
                         .lightLevel(state -> 7)
                         .friction(0.6F)
+                        .isValidSpawn((state,level,pos, entityType) -> false)
         );
     }
 

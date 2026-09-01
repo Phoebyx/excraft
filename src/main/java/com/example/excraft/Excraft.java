@@ -1,36 +1,27 @@
 package com.example.excraft;
 
-import com.example.excraft.blocks.ExcraftBlocks;
-import com.example.excraft.blocks.ExcraftPortalBeaconBlockEntity;
-import com.example.excraft.blocks.ExcraftPortalBeaconEntityRenderer;
-import com.example.excraft.blocks.ExcraftPortalTint;
+import com.example.excraft.blocks.portal.ExcraftPortalTint;
 import com.example.excraft.data.ExcraftCreativeModeTab;
 import com.example.excraft.data.ExcraftDataRegisters;
 import com.example.excraft.data.ExcraftTimer;
 import com.example.excraft.dimension.*;
 //import com.example.excraft.infiniverse.internal.UpdateDimensionsPacket;
-import com.example.excraft.dimension.worldmodifiers.WorldModifier;
 import com.example.excraft.dimension.worldmodifiers.WorldModifierManager;
 import com.example.excraft.data.WorldModifierRegister;
 import com.example.excraft.dimension.worldmodifiers.WorldModifierManagerSavedData;
 import com.example.excraft.inventory.DurabilityChanges;
 import com.example.excraft.portal.PlaceOriginPortal;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import net.commoble.infiniverse.internal.DimensionManager;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.profiling.jfr.event.ChunkGenerationEvent;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.Event;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
-import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ChunkEvent;
+import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -47,9 +38,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
-
-import java.util.Arrays;
-import java.util.Set;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(Excraft.MODID)

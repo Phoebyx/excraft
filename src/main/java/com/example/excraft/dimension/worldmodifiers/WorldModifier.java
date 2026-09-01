@@ -11,22 +11,23 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public interface WorldModifier {
-    String modifierName = "";
+    String modifierName = " ";
     WorldModifierType worldModifierType = null;
-    ResourceLocation modifierResourceLocation = null;
+    String modifierResourceLocation = null;
     ResourceKey modifierResourceKey = null;
     int weight = 0;
     int impact = 0;
+    boolean active = false;
     List<String> dependentOn = null;
     TagKey<WorldModifier> WORLD_MODIFIER_TAG_KEY = null;
 
-    public int getWeight();
+    default public int getWeight() {return weight;};
 
     public String getModifierName();
 
-    public ResourceLocation getModifierResourceLocation();
+    public String getModifierResourceLocation();
 
-    public int getImpact();
+    default public int getImpact() {return impact;};
 
     public @Nullable List<String> getDependentOn();
 

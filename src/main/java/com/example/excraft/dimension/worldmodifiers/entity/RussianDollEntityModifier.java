@@ -25,7 +25,7 @@ import java.util.List;
 
 public class RussianDollEntityModifier extends EntityWorldModifierType implements WorldModifier {
     private static final String modifierName = "Russian Doll";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","russiandoll");
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = -7;
     private static boolean active = false;
@@ -42,7 +42,7 @@ public class RussianDollEntityModifier extends EntityWorldModifierType implement
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

@@ -3,7 +3,7 @@ package com.example.excraft.data;
 import com.example.excraft.Config;
 import com.example.excraft.Excraft;
 import com.example.excraft.blocks.ExcraftBlocks;
-import com.example.excraft.blocks.ExcraftPortalBlock;
+import com.example.excraft.blocks.portal.ExcraftPortalBlock;
 import com.example.excraft.items.ExcraftItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -54,7 +54,8 @@ public class ExcraftDataRegisters {
                  ExcraftPortalBlock.ATTACHMENT_TYPES,
                  WorldModifierRegister.WORLDMODIFIERREGISTER,
                  ExcraftPortalBlock.SOUND_EVENTS,
-                 ExcraftBlocks.BLOCK_ENTITY_TYPES
+                 ExcraftBlocks.BLOCK_ENTITY_TYPES,
+                 DensityFunctionRegistry.DENSITY_FUNCTION_TYPES
         };
         return registers;
     }

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PermanentTimeOfDayModifier extends WorldWorldModifierType implements WorldModifier {
     private static final String modifierName = "Permanent Time";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","permanent_time");
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private int impact = 6;
     private static ResourceKey<Level> levelResourceKey;
@@ -39,7 +39,7 @@ public class PermanentTimeOfDayModifier extends WorldWorldModifierType implement
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

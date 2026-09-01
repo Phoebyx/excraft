@@ -29,7 +29,9 @@ public class WorldModifierManagerSavedData extends SavedData {
         CompoundTag selectedModifiersTag = new CompoundTag();
         for (WorldModifier worldModifier : this.selectedModifiers) {
             if (worldModifier != null) {
-                selectedModifiersTag.putString(worldModifier.getModifierName(), worldModifier.getModifierResourceLocation().toString());
+                ResourceLocation resourceLocation = WorldModifierRegister.WORLD_MODIFIER_REGISTRY.getKey(worldModifier);
+                selectedModifiersTag.putString(worldModifier.getModifierName(),resourceLocation.toString());
+                Excraft.LOGGER.info(selectedModifiersTag.getAsString());
             }
         }
         tag.put("SelectedModifiers",selectedModifiersTag);
@@ -54,11 +56,8 @@ public class WorldModifierManagerSavedData extends SavedData {
                 CompoundTag selectedModifiersTag = tag.getCompound(key);
                 for (String currentModifier : selectedModifiersTag.getAllKeys()) {
                     String resourceLocation = selectedModifiersTag.getString(currentModifier);
-                    Excraft.LOGGER.info("SD "+ resourceLocation + currentModifier);
                     ResourceLocation location = ResourceLocation.parse(resourceLocation);
-                    Excraft.LOGGER.info("S3D "+ location);
                     WorldModifier worldModifier = WorldModifierRegister.WORLD_MODIFIER_REGISTRY.get(location);
-                    Excraft.LOGGER.info("S33D "+ worldModifier);
                     data.selectedModifiers.add(worldModifier);
 
                 }

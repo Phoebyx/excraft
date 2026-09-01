@@ -2,9 +2,10 @@ package com.example.excraft.dimension;
 
 import com.example.excraft.Config;
 import com.example.excraft.Excraft;
-import com.example.excraft.blocks.ExcraftPortalBlock;
+import com.example.excraft.blocks.portal.ExcraftPortalBlock;
 //import com.example.excraft.infiniverse.api.InfiniverseAPI;
 //import com.example.excraft.infiniverse.internal.DimensionManager;
+import com.example.excraft.dimension.worldmodifiers.WorldGenModifierManager;
 import com.example.excraft.dimension.worldmodifiers.WorldModifierManager;
 import com.example.excraft.dimension.worldmodifiers.WorldModifierManagerSavedData;
 import net.commoble.infiniverse.api.InfiniverseAPI;
@@ -23,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 
-
 public class ExcraftDimensionManager {
     public static final ResourceKey<Level> EXCRAFT_LEVEL = ResourceKey.create(Registries.DIMENSION,ResourceLocation.fromNamespaceAndPath(Excraft.MODID, "excraft"));
     private static WorldModifierManager currentManager;
@@ -35,6 +35,7 @@ public class ExcraftDimensionManager {
         currentManager = new WorldModifierManager(server,tempInt);
         WorldModifierManagerSavedData worldModifierManagerSavedData = WorldModifierManagerSavedData.compute(server.overworld().getDataStorage());
         worldModifierManagerSavedData.modifyData();
+        WorldGenModifierManager.getSpecialModifier();
         DimensionCreator newDimension = new DimensionCreator();
         DimensionType dimensionType = newDimension.makeDimensionType();
         InfiniverseAPI.get().getOrCreateLevel(server, EXCRAFT_LEVEL, () -> newDimension.makeStem(dimensionType,server));

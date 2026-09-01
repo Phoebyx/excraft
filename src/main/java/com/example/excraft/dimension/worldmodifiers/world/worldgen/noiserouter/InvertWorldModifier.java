@@ -1,9 +1,8 @@
-package com.example.excraft.dimension.worldmodifiers.world.worldgen;
+package com.example.excraft.dimension.worldmodifiers.world.worldgen.noiserouter;
 
 import com.example.excraft.dimension.worldmodifiers.world.WorldWorldModifierType;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.WorldGenWorldModifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -13,7 +12,7 @@ import java.util.List;
 
 public class InvertWorldModifier extends WorldWorldModifierType implements WorldGenWorldModifier {
     private static final String modifierName = "Invert";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","invert");
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private int impact = -2;
     private static ResourceKey<Level> levelResourceKey;
@@ -35,7 +34,7 @@ public class InvertWorldModifier extends WorldWorldModifierType implements World
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 

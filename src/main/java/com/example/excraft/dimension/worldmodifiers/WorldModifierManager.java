@@ -6,6 +6,7 @@ import com.example.excraft.data.WorldModifierRegister;
 import com.example.excraft.dimension.DimensionRandomizer;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.dimension.worldmodifiers.world.worldgen.WorldGenWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.special.SpecialWorldGenModifier;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -80,11 +81,19 @@ public class WorldModifierManager {
         List<WorldModifier> unfilteredList = getWorldModifierList();
         List<WorldModifier> list = new ArrayList<>();
         Excraft.LOGGER.info("Rolling this many modifiers: " + currentModifierSlots);
+        boolean wasSpecialModifierRolled = false;
         int currentImpactSum = 0;
         for (int i = 0; i < currentModifierSlots && !unfilteredList.isEmpty(); i++) {
             int modifierAtRandom = randomSource.nextIntBetweenInclusive(0,unfilteredList.size() - 1);
             WorldModifier selectedModifier = unfilteredList.remove(modifierAtRandom);
             if (selectedModifier.getWeight() < 1 && (selectedModifier.getWeight() >= randomSource.nextInt(100)/100)) {i--; continue;}
+            if (selectedModifier instanceof SpecialWorldGenModifier && !wasSpecialModifierRolled) {
+                wasSpecialModifierRolled = true;
+            } else if (selectedModifier instanceof SpecialWorldGenModifier) {
+                i--;
+                list.remove(selectedModifier);
+                continue;
+            }
             list.add(selectedModifier);
             if (selectedModifier.getImpact() == 0 && randomSource.nextBoolean()) {i--;}
             Excraft.LOGGER.info("Current impact sum " + currentImpactSum + " adding " + selectedModifier.getImpact() + " total " + (currentImpactSum + selectedModifier.getImpact() + " of index " + modifierAtRandom ));
@@ -105,14 +114,14 @@ public class WorldModifierManager {
             currentImpactSum = currentImpactSum - gottenModifier.getImpact();
             Excraft.LOGGER.info("Result of that was " + currentImpactSum);
             list.remove(modifierAtRandom);
-            int findClosestValue = 0;
+            int findClosestValue = Math.abs(currentImpactSum);
             int currentIndex = 0;
             int indexOfFindClosestValue = 0;
             for (WorldModifier worldModifier:unfilteredList) {
-                if (worldModifier.getImpact() + currentImpactSum < findClosestValue) {
-                    findClosestValue = worldModifier.getImpact();
+                if (Math.abs(worldModifier.getImpact() + currentImpactSum) < findClosestValue) {
+                    findClosestValue = Math.abs(worldModifier.getImpact() + currentImpactSum);
                     indexOfFindClosestValue = currentIndex;
-                } else if (worldModifier.getImpact() == findClosestValue && randomSource.nextIntBetweenInclusive(0,10) > 7) {
+                } else if (Math.abs(worldModifier.getImpact() + currentImpactSum) == findClosestValue && randomSource.nextIntBetweenInclusive(0,10) > 7) {
                     indexOfFindClosestValue = currentIndex;
                 }
                 currentIndex++;
@@ -143,12 +152,14 @@ public class WorldModifierManager {
     }
 
     public void worldModifierScheduler() {
-        for (WorldModifier worldModifier : currentModifiers) {
-            if (disabled) {
-                worldModifier.disabledEffect(minecraftServer, ExcraftDimensionManager.EXCRAFT_LEVEL);
-                Excraft.LOGGER.info(worldModifier + " got disabled");
-            } else {
-                worldModifier.activateEffect(minecraftServer, ExcraftDimensionManager.EXCRAFT_LEVEL);
+        if (!minecraftServer.overworld().isClientSide()) {
+            for (WorldModifier worldModifier : currentModifiers) {
+                if (disabled) {
+                    worldModifier.disabledEffect(minecraftServer, ExcraftDimensionManager.EXCRAFT_LEVEL);
+                    Excraft.LOGGER.info(worldModifier + " got disabled");
+                } else {
+                    worldModifier.activateEffect(minecraftServer, ExcraftDimensionManager.EXCRAFT_LEVEL);
+                }
             }
         }
     }

@@ -1,7 +1,8 @@
-package com.example.excraft.blocks;
+package com.example.excraft.blocks.portal;
 
 import com.example.excraft.Config;
 import com.example.excraft.Excraft;
+import com.example.excraft.blocks.ExcraftBlocks;
 import com.example.excraft.data.ExcraftTimer;
 import com.example.excraft.dimension.ExcraftDimensionManager;
 import com.example.excraft.portal.PlaceOriginPortal;
@@ -15,13 +16,12 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -32,12 +32,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.attachment.AttachmentType;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.jetbrains.annotations.NotNull;
@@ -100,9 +98,10 @@ public class ExcraftPortalBlock extends Block {
         if (this.getAge(state) != currentTimerColour); {
            level.setBlock(pos, this.updateStateForColor(currentTimerColour,state),2);
         }
-        LongSet forcedChunks = level.getForcedChunks();
         if (!areChunksForced) {
-            level.setChunkForced(pos.getX(),pos.getZ(),true);
+            Excraft.LOGGER.info("ChunkForced");
+            ChunkPos chunkPos = new ChunkPos(pos);
+            level.getChunkSource().updateChunkForced(chunkPos,true);
             areChunksForced = true;
         }
     }

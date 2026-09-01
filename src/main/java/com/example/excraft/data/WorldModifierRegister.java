@@ -7,14 +7,22 @@ import com.example.excraft.dimension.worldmodifiers.events.RainWorldModifier;
 import com.example.excraft.dimension.worldmodifiers.world.EnvironmentLightLevelModifier;
 import com.example.excraft.dimension.worldmodifiers.world.PermanentTimeOfDayModifier;
 import com.example.excraft.dimension.worldmodifiers.world.worldgen.*;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.noiserouter.InvertWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.noiserouter.PrettyFlatWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.noiserouter.SqueezeWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.noiserouter.StepWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.noisesettings.LavaWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.noisesettings.SeaWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.special.AMazeWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.special.ChessWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.special.RibbonWorldModifier;
+import com.example.excraft.dimension.worldmodifiers.world.worldgen.special.SkyGridWorldModifier;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffects;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 
@@ -36,27 +44,35 @@ public class WorldModifierRegister {
             .create();
     public static final DeferredRegister<WorldModifier> WORLDMODIFIERREGISTER = DeferredRegister.create(WORLD_MODIFIER_REGISTRY, "excraft");
     public static final TagKey<WorldModifier> WORLD_MODIFIER_TAG = TagKey.create(WorldModifierRegister.WORLD_MODIFIER_REGISTRY_KEY,ResourceLocation.fromNamespaceAndPath("excraft","rainworld"));
-    public static final Supplier<WorldModifier> RAINWORLD = WORLDMODIFIERREGISTER.register("rainworld", RainWorldModifier::new);
-    public static final Supplier<WorldModifier> SPEED = WORLDMODIFIERREGISTER.register("speed", () -> speedModifier);
-    public static final Supplier<WorldModifier> JUMPBOOST = WORLDMODIFIERREGISTER.register("jump_boost", () -> jumpBoost );
-    public static final Supplier<WorldModifier> HUNGER = WORLDMODIFIERREGISTER.register("hunger", () -> hunger);
-    public static final Supplier<WorldModifier> ABSORPTION = WORLDMODIFIERREGISTER.register("absorption", () -> absorption);
-    public static final Supplier<WorldModifier> PERMANENTTIME = WORLDMODIFIERREGISTER.register("permanent_time", PermanentTimeOfDayModifier::new);
-    public static final Supplier<WorldModifier> SUNBURNT = WORLDMODIFIERREGISTER.register("sunburnt", SunburntModifier::new);
-    public static final Supplier<WorldModifier> ENVIRONMENT_LIGHT = WORLDMODIFIERREGISTER.register("environment_light", EnvironmentLightLevelModifier::new);
-    public static final Supplier<WorldModifier> GRAVITY = WORLDMODIFIERREGISTER.register("gravity", AttributeGravityModifier::new);
-    public static final Supplier<WorldModifier> STEP_HEIGHT = WORLDMODIFIERREGISTER.register("stepheight", AttributeStepHeightModifier::new);
-    public static final Supplier<WorldModifier> SIZE_MATTERS = WORLDMODIFIERREGISTER.register("sizematters", SizeMattersModifier::new);
-    public static final Supplier<WorldModifier> ENDERPEARL = WORLDMODIFIERREGISTER.register("infiniteenderpearl", InfiniteEnderPearlModifier::new);
-    public static final Supplier<WorldModifier> MARTIDOM = WORLDMODIFIERREGISTER.register("martidom", MartidomEntityModifier::new);
-    public static final Supplier<WorldModifier> RUSSIANDOLL = WORLDMODIFIERREGISTER.register("russiandoll", RussianDollEntityModifier::new);
 
-    public static final Supplier<WorldGenWorldModifier> PRETTYFLAT = WORLDMODIFIERREGISTER.register("prettyflat", PrettyFlatWorldModifier::new);
-    public static final Supplier<WorldGenWorldModifier> INVERT = WORLDMODIFIERREGISTER.register("invert", InvertWorldModifier::new);
-    public static final Supplier<WorldGenWorldModifier> SQUEEZE = WORLDMODIFIERREGISTER.register("squeeze", SqueezeWorldModifier::new);
-    public static final Supplier<WorldGenWorldModifier> SEAWORLD = WORLDMODIFIERREGISTER.register("seaworld", SeaWorldModifier::new);
-    public static final Supplier<WorldGenWorldModifier> STEP = WORLDMODIFIERREGISTER.register("step", StepWorldModifier::new);
-    public static final Supplier<WorldGenWorldModifier> LAVAWORLD = WORLDMODIFIERREGISTER.register("lavaworld", LavaWorldModifier::new);
+    public static final Supplier<WorldModifier> SPEED = WORLDMODIFIERREGISTER.register(speedModifier.getModifierResourceLocation(), () -> speedModifier);
+    public static final Supplier<WorldModifier> JUMPBOOST = WORLDMODIFIERREGISTER.register(jumpBoost.getModifierResourceLocation(), () -> jumpBoost );
+    public static final Supplier<WorldModifier> HUNGER = WORLDMODIFIERREGISTER.register(hunger.getModifierResourceLocation(), () -> hunger);
+    public static final Supplier<WorldModifier> ABSORPTION = WORLDMODIFIERREGISTER.register(absorption.getModifierResourceLocation(), () -> absorption);
+
+    public static final Supplier<WorldModifier> RAINWORLD = WORLDMODIFIERREGISTER.register(RainWorldModifier.modifierResourceLocation, RainWorldModifier::new);
+    public static final Supplier<WorldModifier> PERMANENTTIME = WORLDMODIFIERREGISTER.register(PermanentTimeOfDayModifier.modifierResourceLocation, PermanentTimeOfDayModifier::new);
+    public static final Supplier<WorldModifier> SUNBURNT = WORLDMODIFIERREGISTER.register(SunburntModifier.modifierResourceLocation, SunburntModifier::new);
+    public static final Supplier<WorldModifier> ENVIRONMENT_LIGHT = WORLDMODIFIERREGISTER.register(EnvironmentLightLevelModifier.modifierResourceLocation, EnvironmentLightLevelModifier::new);
+    public static final Supplier<WorldModifier> GRAVITY = WORLDMODIFIERREGISTER.register(AttributeGravityModifier.modifierResourceLocation, AttributeGravityModifier::new);
+    public static final Supplier<WorldModifier> STEP_HEIGHT = WORLDMODIFIERREGISTER.register(AttributeStepHeightModifier.modifierResourceLocation, AttributeStepHeightModifier::new);
+    public static final Supplier<WorldModifier> SIZE_MATTERS = WORLDMODIFIERREGISTER.register(SizeMattersModifier.modifierResourceLocation, SizeMattersModifier::new);
+    public static final Supplier<WorldModifier> ENDERPEARL = WORLDMODIFIERREGISTER.register(InfiniteEnderPearlModifier.modifierResourceLocation, InfiniteEnderPearlModifier::new);
+    public static final Supplier<WorldModifier> MARTIDOM = WORLDMODIFIERREGISTER.register(MartidomEntityModifier.modifierResourceLocation, MartidomEntityModifier::new);
+    public static final Supplier<WorldModifier> RUSSIANDOLL = WORLDMODIFIERREGISTER.register(RussianDollEntityModifier.modifierResourceLocation, RussianDollEntityModifier::new);
+
+    public static final Supplier<WorldGenWorldModifier> PRETTYFLAT = WORLDMODIFIERREGISTER.register(PrettyFlatWorldModifier.modifierResourceLocation, PrettyFlatWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> INVERT = WORLDMODIFIERREGISTER.register(InvertWorldModifier.modifierResourceLocation, InvertWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> SQUEEZE = WORLDMODIFIERREGISTER.register(SqueezeWorldModifier.modifierResourceLocation, SqueezeWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> SEAWORLD = WORLDMODIFIERREGISTER.register(SeaWorldModifier.modifierResourceLocation, SeaWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> STEP = WORLDMODIFIERREGISTER.register(StepWorldModifier.modifierResourceLocation, StepWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> LAVAWORLD = WORLDMODIFIERREGISTER.register(LavaWorldModifier.modifierResourceLocation, LavaWorldModifier::new);
+
+    public static final Supplier<WorldGenWorldModifier> RIBBON = WORLDMODIFIERREGISTER.register(RibbonWorldModifier.modifierResourceLocation, RibbonWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> SKYGRID = WORLDMODIFIERREGISTER.register(SkyGridWorldModifier.modifierResourceLocation, SkyGridWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> CHESS = WORLDMODIFIERREGISTER.register(ChessWorldModifier.modifierResourceLocation, ChessWorldModifier::new);
+    public static final Supplier<WorldGenWorldModifier> AMAZE = WORLDMODIFIERREGISTER.register(AMazeWorldModifier.modifierResourceLocation, AMazeWorldModifier::new);
+
 
 
     public static void registerModifierEventListeners() {

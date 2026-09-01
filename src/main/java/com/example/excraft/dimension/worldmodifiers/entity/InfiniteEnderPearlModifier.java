@@ -28,7 +28,7 @@ import java.util.Vector;
 
 public class InfiniteEnderPearlModifier extends EntityWorldModifierType implements WorldModifier {
     private static final String modifierName = "Infinite Ender Pearl";
-    private static final ResourceLocation modifierResourceLocation = ResourceLocation.fromNamespaceAndPath("excraft","infiniteenderpearl");
+    public static final String modifierResourceLocation = modifierName.toLowerCase().replaceAll(" ","_");
     private final int weight = 1;
     private final int impact = 5;
     private static boolean active = false;
@@ -44,7 +44,7 @@ public class InfiniteEnderPearlModifier extends EntityWorldModifierType implemen
     }
 
     @Override
-    public ResourceLocation getModifierResourceLocation() {
+    public String getModifierResourceLocation() {
         return modifierResourceLocation;
     }
 
